@@ -71,8 +71,8 @@ export class BooksController {
   ) {
     const serverUrl = process.env.SERVER_URL || 'http://localhost:3001';
 
-    const coverUrl = files?.cover?.[0] ? `${serverUrl}${files.cover[0].filename}` : '';
-    const pdfUrl = files?.pdf?.[0] ? `${serverUrl}${files.pdf[0].filename}` : '';
+    const coverUrl = files?.cover?.[0] ? `${serverUrl}/uploads/${files.cover[0].filename}` : '';
+    const pdfUrl = files?.pdf?.[0] ? `${serverUrl}/uploads/${files.pdf[0].filename}` : '';
 
     return this.booksService.create({
       title: body.title,
