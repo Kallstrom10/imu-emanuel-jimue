@@ -72,10 +72,11 @@ export class MembersController {
     @Body() body: any, // Substitui 'any' pelo teu UpdateMemberDto se tiveres
   ) {
     const dadosMembro = { ...body };
+    const serverUrl = process.env.SERVER_URL || 'http://localhost:3001';
 
     // Se o utilizador enviou uma nova foto na edição, atualiza o URL
     if (file) {
-      dadosMembro.photoUrl = `http://localhost:3001/uploads/${file.filename}`;
+      dadosMembro.photoUrl = `${serverUrl}/uploads/${file.filename}`;
     }
 
     // Chama o teu service para atualizar na base de dados

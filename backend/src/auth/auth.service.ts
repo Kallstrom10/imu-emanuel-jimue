@@ -30,20 +30,20 @@ export class AuthService {
     // 3. Montar Payload do Token
     const payload = {
       sub: user._id,
-      primeiro: user.firstName,
-      ultimo: user.lastName,
-      telefone: user.phone,
-      cargo: user.role || 'membro',
+      firstName: user.firstName,
+      lastName: user.lastName,
+      phone: user.phone,
+      role: user.role || 'membro',
     };
 
     // 4. Retornar dados formatados e Token JWT
     return {
       user: {
         id: user._id,
-        primeiro: user.firstName,
-        ultimo: user.lastName,
-        telefone: user.phone,
-        cargo: user.role || 'membroaa',
+        firstName: user.firstName,
+        lastName: user.lastName,
+        phone: user.phone,
+        role: user.role || 'membroaa',
         avatarUrl: user.photoUrl || null,
       },
       token: this.jwtService.sign(payload),

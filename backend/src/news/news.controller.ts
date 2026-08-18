@@ -55,7 +55,8 @@ export class NewsController {
     @Body('author') author: string,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    const imageUrl = file ? `http://localhost:3001/uploads/${file.filename}` : undefined;
+    const serverUrl = process.env.SERVER_URL || 'http://localhost:3001';
+    const imageUrl = file ? `${serverUrl}/uploads/${file.filename}` : undefined;
     return this.newsService.create(title, content, author, imageUrl);
   }
 
@@ -68,7 +69,8 @@ export class NewsController {
     @Body('author') author?: string,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    const imageUrl = file ? `http://localhost:3001/uploads/${file.filename}` : undefined;
+    const serverUrl = process.env.SERVER_URL || 'http://localhost:3001';
+    const imageUrl = file ? `${serverUrl}/uploads/${file.filename}` : undefined;
     return this.newsService.update(id, title, content, author, imageUrl);
   }
 

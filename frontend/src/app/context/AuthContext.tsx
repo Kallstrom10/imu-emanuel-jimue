@@ -4,8 +4,8 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 
 export interface User {
   id: string;
-  firstname: string;
-  lastname: string;
+  firstName: string;
+  lastName: string;
   phone: string;
   role: string;
   avatarUrl?: string;
@@ -22,32 +22,77 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Função para padronizar qualquer formato vindo da API
-const normalizeUserData = (raw: any): User | null => {
-  if (!raw) return null;
+// Função para padronizar qualquer formato vindo da API ou de objetos aninhados
+const normalizeUserData = (rawInput: any): User | null => {
+  if (!rawInput) return null;
 
-  // 1. Tratamento de Nome (firstname / lastname / nome completo)
-  const fn = raw.firstname || raw.firstName || raw.primeiroNome || "";
-  const ln = raw.lastname || raw.lastName || raw.ultimoNome || "";
-  
-  const fullName = raw.nome || raw.name || raw.fullName || "";
-  const nameParts = fullName.trim().split(/\s+/);
+  // Desembrulha os dados caso venham aninhados (ex: rawInput.user ou rawInput.data)
+  const raw = rawInput.user || rawInput.data || rawInput;
 
-  const finalFirstName = fn || nameParts[0] || "";
+  // 1. Extração flexível do Primeiro Nome (camelCase, lowercase, snake_case)
+  const fn =
+    raw.firstName ||
+    raw.firstname ||
+    raw.first_name ||
+    raw.primeiroNome ||
+    raw.primeiro_nome ||
+    "";
+
+  // 2. Extração flexível do Último Nome
+  const ln =
+    raw.lastName ||
+    raw.lastname ||
+    raw.last_name ||
+    raw.ultimoNome ||
+    raw.ultimo_nome ||
+    "";
+
+  // 3. Extração flexível de Nome Completo como Plano B
+  const fullName =
+    raw.nome ||
+    raw.name ||
+    raw.fullName ||
+    raw.fullname ||
+    raw.full_name ||
+    raw.nomeCompleto ||
+    "";
+
+  const nameParts = fullName.trim().split(/\s+/).filter(Boolean);
+
+  const finalFirstName =
+    fn || (nameParts.length > 0 ? nameParts[0] : "");
+
   const finalLastName =
     ln || (nameParts.length > 1 ? nameParts[nameParts.length - 1] : "");
 
-  // 2. Telefone, Cargo e Avatar
-  const phone = raw.phone || raw.telefone || raw.numTelefone || "";
-  const role = raw.role || raw.cargo || raw.funcao || "";
+  // 4. Telefone, Cargo e Avatar
+  const phone =
+    raw.phone ||
+    raw.telefone ||
+    raw.numTelefone ||
+    raw.phone_number ||
+    "";
+
+  const role =
+    raw.role ||
+    raw.cargo ||
+    raw.funcao ||
+    raw.position ||
+    "";
+
   const avatarUrl =
-    raw.avatarUrl || raw.avatar || raw.foto || raw.imageUrl || "";
+    raw.avatarUrl ||
+    raw.avatar ||
+    raw.foto ||
+    raw.imageUrl ||
+    raw.photoUrl ||
+    "";
 
   return {
     ...raw,
     id: raw.id || raw._id || "",
-    firstname: finalFirstName,
-    lastname: finalLastName,
+    firstName: finalFirstName,
+    lastName: finalLastName,
     phone: String(phone),
     role: role,
     avatarUrl: avatarUrl,
@@ -76,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = (userData: any, newToken: string) => {
-    console.log("DADOS RECEBIDOS DO BACKEND:", userData); // Para inspeção no F12
+    console.log("DADOS RECEBIDOS DO BACKEND:", userData);
     const normalizedUser = normalizeUserData(userData);
 
     if (normalizedUser) {

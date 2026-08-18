@@ -164,12 +164,14 @@ export default function AdminDashboard() {
   const naoBatizadosMalePct = totalNaoBatizados > 0 ? (stats!.batismo.naoBatizados.m / totalNaoBatizados) * 100 : 0;
   const naoBatizadosFemalePct = totalNaoBatizados > 0 ? (stats!.batismo.naoBatizados.f / totalNaoBatizados) * 100 : 0;
 
-  const userInitial = user?.firstname?.[0] || "";
-  const userPhoto = user?.avatarUrl;
-  const userFname = user?.firstname || "";
-  const userLname = user?.lastname || "";
-  const userFirstName = userFname.split(" ")[0];
-  const userRole = user?.role || "Gestor";
+  // Trata objeto de utilizador simples ou aninhado
+  const currentUser = user?.user || user;
+  const userInitial = currentUser?.firstName?.[0] || currentUser?.firstname?.[0] || "A";
+  const userPhoto = currentUser?.avatarUrl || currentUser?.avatar || currentUser?.foto || currentUser?.photo;
+  const userFname = currentUser?.firstName || currentUser?.firstname || "";
+  const userLname = currentUser?.lastName || currentUser?.lastname || "";
+  const userFirstName = userFname ? userFname.split(" ")[0] : "Admin";
+  const userRole = "Administrador";
 
   return (
     <div className="h-screen w-full flex bg-[#F0F4F8] font-sans text-gray-800 overflow-hidden relative">
@@ -221,9 +223,21 @@ export default function AdminDashboard() {
             )}
           </div>
 
-          <div className="bg-slate-800/60 rounded-2xl p-3 mb-6 flex items-center gap-3 border border-slate-700/50">
-            <div className="w-9 h-9 bg-slate-700 rounded-xl flex items-center justify-center text-white font-semibold text-sm shrink-0">
-              {userInitial}
+          <div
+            className={`bg-slate-800/60 rounded-2xl p-3 mb-6 flex items-center ${
+              isSidebarCollapsed ? "justify-center" : "gap-3"
+            } border border-slate-700/50`}
+          >
+            <div className="w-9 h-9 bg-slate-700 rounded-xl flex items-center justify-center text-white font-semibold text-sm shrink-0 overflow-hidden">
+              {userPhoto ? (
+                <img
+                  src={userPhoto}
+                  alt="Foto de perfil"
+                  className="w-full h-full object-cover rounded-xl"
+                />
+              ) : (
+                <span>{userInitial}</span>
+              )}
             </div>
             {!isSidebarCollapsed && (
               <div className="overflow-hidden">
@@ -342,8 +356,16 @@ export default function AdminDashboard() {
                 9+
               </span>
             </div>
-            <div className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center font-bold text-sm shadow-md">
-              {userInitial}
+            <div className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center font-bold text-sm shadow-md overflow-hidden">
+              {userPhoto ? (
+                <img
+                  src={userPhoto}
+                  alt="Foto de perfil"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                userInitial
+              )}
             </div>
           </div>
         </div>

@@ -63,16 +63,24 @@ export default function Header() {
 
   if (isAuthPage) return null;
 
-  // 1. Extração robusta do Nome (suporta firstname/lastname separadamente ou nome completo)
+  // 1. Extração robusta do Primeiro e Último Nome
   const firstName =
-    user?.firstname || "";
+    user?.firstName || "";
 
   const lastName =
-    user?.lastname || "";
+    user?.lastName || "";
 
-  const rawName = (firstName || lastName)
-    ? `${firstName} ${lastName}`.trim()
-    : "";
+  const fullNameFallback =
+    user?.name || user?.nome || user?.fullName || user?.fullname || "";
+
+  const emailPrefix = user?.lastName;
+
+  let rawName = "";
+  if (firstName || lastName) {
+    rawName = `${firstName} ${lastName}`.trim();
+  } else if (fullNameFallback) {
+    rawName = fullNameFallback;
+  }
 
   const getFirstAndLastName = (fullName: string) => {
     if (!fullName) return "Utilizador";
@@ -84,22 +92,22 @@ export default function Header() {
   const displayName = getFirstAndLastName(rawName);
   const firstLetter = displayName !== "Utilizador" ? displayName.charAt(0).toUpperCase() : "U";
 
-  // 2. Extração do Telefone e Validação Admin (928246352)
+  // 2. Extração do Telefone e Validação Admin
   const rawPhone =
-    user?.phone || "";
+    user?.phone || user?.telefone || user?.phone_number || "";
 
   const cleanPhone = String(rawPhone).replace(/\D/g, "");
-  const rawRole = String(user?.role || "").toLowerCase();
+  const rawRole = String(user?.role || user?.cargo || "").toLowerCase();
   
-  // Confirma admin por telefone OU por role/cargo de admin
+  // Confirms admin por telefone OU por role/cargo
   const isAdmin = cleanPhone.includes("928246352") || rawRole === "admin" || rawRole === "administrador";
 
-  // 3. Extração do Cargo e Foto de Perfil
+  // 3. Extração do Cargo e Foto de Perfil da Base de Dados
   const displayRole =
-    user?.role || (isAdmin ? "Administrador" : "Membro");
+    user?.role || user?.cargo || user?.position || (isAdmin ? "Administrador" : "Membro");
 
   const userAvatar =
-    user?.avatarUrl || null;
+    user?.avatarUrl || user?.avatar || user?.photoUrl || user?.foto || null;
 
   return (
     <>
@@ -210,12 +218,12 @@ export default function Header() {
                       <p className="text-xs font-bold text-slate-800 truncate">
                         {displayName}
                       </p>
-                      <p className="text-[10px] text-slate-500 font-medium capitalize">
+                      <p className="text-[10px] text-slate-500 font-medium capitalize truncate">
                         {displayRole}
                       </p>
                     </div>
 
-                    {/* BOTÃO PARA PAINEL ADMIN (APENAS PARA O TELEFONE DO ADMIN) */}
+                    {/* BOTÃO PARA PAINEL ADMIN (SE FOR ADMIN) */}
                     {isAdmin && (
                       <Link
                         href="/admin"
@@ -230,7 +238,7 @@ export default function Header() {
                       onClick={() => {
                         logout();
                         setIsUserDropdownOpen(false);
-                        router.push("/login"); // Redireciona para a página de login
+                        router.push("/login");
                       }}
                       className="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
                     >

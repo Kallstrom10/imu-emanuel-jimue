@@ -69,10 +69,10 @@ export class BooksController {
     @UploadedFiles()
     files: { cover?: Express.Multer.File[]; pdf?: Express.Multer.File[] },
   ) {
-    const baseUrl = 'http://localhost:3001/uploads/';
+    const serverUrl = process.env.SERVER_URL || 'http://localhost:3001';
 
-    const coverUrl = files?.cover?.[0] ? `${baseUrl}${files.cover[0].filename}` : '';
-    const pdfUrl = files?.pdf?.[0] ? `${baseUrl}${files.pdf[0].filename}` : '';
+    const coverUrl = files?.cover?.[0] ? `${serverUrl}${files.cover[0].filename}` : '';
+    const pdfUrl = files?.pdf?.[0] ? `${serverUrl}${files.pdf[0].filename}` : '';
 
     return this.booksService.create({
       title: body.title,
@@ -97,17 +97,17 @@ export class BooksController {
     @UploadedFiles()
     files: { cover?: Express.Multer.File[]; pdf?: Express.Multer.File[] },
   ) {
-    const baseUrl = 'http://localhost:3001/uploads/';
+    const serverUrl = process.env.SERVER_URL || 'http://localhost:3001';
     const updateData: any = {};
 
     if (body.title) updateData.title = body.title;
     
     if (files?.cover?.[0]) {
-      updateData.coverUrl = `${baseUrl}${files.cover[0].filename}`;
+      updateData.coverUrl = `${serverUrl}/uploads/${files.cover[0].filename}`;
     }
 
     if (files?.pdf?.[0]) {
-      updateData.pdfUrl = `${baseUrl}${files.pdf[0].filename}`;
+      updateData.pdfUrl = `${serverUrl}/uploads/${files.pdf[0].filename}`;
     }
 
     return this.booksService.update(id, updateData);

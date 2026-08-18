@@ -15,7 +15,9 @@ import {
   Shield,
   Check,
   UserPlus,
-  AlertCircle
+  AlertCircle,
+  AlertTriangle,
+  Loader2
 } from "lucide-react";
 
 // Tipo para o Membro
@@ -61,6 +63,7 @@ export default function MembrosTab() {
   const [editingMember, setEditingMember] = useState<Membro | null>(null);
   const [memberToDelete, setMemberToDelete] = useState<Membro | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
   
@@ -421,34 +424,45 @@ const handleSaveEdit = async (e: React.FormEvent) => {
 
       {/* ================= MODAL DE ELIMINAÇÃO PERSONALIZADO ================= */}
       {memberToDelete && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-          <div className="bg-white max-w-sm w-full rounded-3xl p-6 text-center shadow-2xl border border-slate-100 zoom-in-95 animate-in">
-            <div className="w-16 h-16 rounded-full bg-red-100 text-red-600 flex items-center justify-center mx-auto mb-4">
-              <Trash2 size={28} />
-            </div>
-            <h3 className="text-xl font-bold text-slate-800 mb-2">Eliminar Membro</h3>
-            <p className="text-sm text-slate-600 mb-6">
-              Tens a certeza que desejas eliminar o membro <br />
-              <strong className="text-slate-900">{memberToDelete.firstName} {memberToDelete.lastName}</strong>? 
-              Esta ação não pode ser desfeita.
-            </p>
-            
-            <div className="flex items-center justify-center gap-3">
-              <button
-                onClick={() => setMemberToDelete(null)}
-                className="px-5 py-2.5 w-full rounded-xl cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-sm transition-all"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={confirmDelete}
-                className="px-5 py-2.5 w-full cursor-pointer rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold text-sm transition-all shadow-md shadow-red-600/20"
-              >
-                Sim, Eliminar
-              </button>
-            </div>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
+        <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl border border-slate-100 p-6 text-center animate-in fade-in zoom-in-95 duration-200">
+          <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mx-auto mb-4">
+            <AlertTriangle size={24} />
+          </div>
+
+          <h3 className="text-base font-bold text-slate-800 mb-2">
+            Eliminar Membro
+          </h3>
+
+          <p className="text-xs text-slate-500 mb-6">
+            Tens a certeza que desejas eliminar{" "}
+            <span className="font-bold text-slate-700">
+              "{memberToDelete.firstName} {memberToDelete.lastName}"
+            </span>
+            ? Esta ação não pode ser desfeita.
+          </p>
+
+          <div className="flex justify-center gap-3">
+            <button
+              type="button"
+              onClick={() => setMemberToDelete(null)}
+              className="w-full py-3 rounded-xl cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all"
+            >
+              Cancelar
+            </button>
+
+            <button
+              type="button"
+              disabled={isDeleting} // Remova se não tiver estado de carregamento
+              onClick={confirmDelete}
+              className="w-full py-3 rounded-xl cursor-pointer bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition-all shadow-md shadow-red-600/20 flex items-center justify-center gap-2"
+            >
+              {isDeleting && <Loader2 className="animate-spin" size={14} />}
+              Eliminar
+            </button>
           </div>
         </div>
+      </div>
       )}
 
 {/* ================= MODAL DE EDIÇÃO CENTRALIZADO ================= */}
