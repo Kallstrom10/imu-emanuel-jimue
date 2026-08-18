@@ -6,7 +6,8 @@ import { join } from 'path';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  
+  const port = process.env.PORT || 3001;
+
   // Ativar a validação global de DTOs
   app.useGlobalPipes(new ValidationPipe({
     whitelist: true, // Remove campos não declarados no DTO
@@ -28,6 +29,6 @@ async function bootstrap() {
   // Ativar CORS (Importante para o teu frontend se conectar sem erros)
   app.enableCors();
 
-  await app.listen(3001);
+  await app.listen(port);
 }
 bootstrap();
