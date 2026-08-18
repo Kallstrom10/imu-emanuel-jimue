@@ -22,7 +22,7 @@ async function bootstrap() {
 
   //Permissão de requisições do Frontend Next.js
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: '*',
     credentials: true,
   });
 
