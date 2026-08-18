@@ -1,7 +1,9 @@
-// src/app.module.ts
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static'; // 1. Importar
+import { join } from 'path';
+
 import { MembersModule } from './members/members.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { BooksModule } from './books/book.module';
@@ -10,12 +12,16 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
-    // 1. Carrega as variáveis do ficheiro .env e torna-as globais na aplicação
     ConfigModule.forRoot({
       isGlobal: true,
     }),
 
-    // 2. Conecta ao MongoDB lendo a variável MONGO_URI do .env (com fallback para local)
+    // 2. Tornar a pasta /uploads acessível publicamente na URL /uploads
+    ServeStaticModule.forRoot({
+      rootPath: join(process.cwd(), 'uploads'),
+      serveRoot: '/uploads',
+    }),
+
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

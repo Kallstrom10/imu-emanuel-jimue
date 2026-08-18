@@ -317,7 +317,10 @@ export default function AdminDashboard() {
           </Link>
 
           <button
-            onClick={logout}
+            onClick={() => {
+              logout();
+              router.push("/login");
+            }}
             className="w-full flex items-center cursor-pointer gap-3 px-3 py-2.5 rounded-xl text-xs font-medium text-red-400 hover:bg-red-500/10 transition-all text-left"
           >
             <LogOut size={18} />

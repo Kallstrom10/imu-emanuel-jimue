@@ -475,7 +475,7 @@ export default function Home() {
             </div>
             <h3 className="font-bold text-slate-800 text-lg mb-2">Telefones</h3>
             <p className="text-slate-500 text-xs sm:text-sm">+244 934 139 667</p>
-            <p className="text-slate-500 text-xs sm:text-sm">+244 990 000 000</p>
+            <p className="text-slate-500 text-xs sm:text-sm">+244 928 246 352</p>
           </div>
 
           {/* Card Localização */}

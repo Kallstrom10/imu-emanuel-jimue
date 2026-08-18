@@ -9,6 +9,11 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "JIMUE - Juventude da Igreja Metodista Unida de Emanuel",
   description: "Site oficial da JIMUE",
+  icons: {
+    icon: "/JIMUE-logo.jpg", // Caminho para a imagem na pasta public
+    shortcut: "/JIMUE-logo.jpg",
+    apple: "/JIMUE-logo.jpg", // Opcional: ícone para dispositivos iOS
+  },
 };
 
 export default function RootLayout({
@@ -21,7 +26,6 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <Header />
-          {/* O pt-24 adiciona um espaçamento no topo para o conteúdo não ficar escondido atrás do cabeçalho fixo */}
           <main className="min-h-screen">
             {children}
           </main>
