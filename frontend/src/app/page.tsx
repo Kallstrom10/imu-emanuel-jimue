@@ -78,12 +78,14 @@ export default function Home() {
   const [isLoadingMembers, setIsLoadingMembers] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
 
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+
   // Buscar Notícias e Membros do Backend
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoadingNews(true);
-        const resNews = await fetch("http://localhost:3001/news");
+        const resNews = await fetch(`${API_URL}/news`);
         if (resNews.ok) {
           const dataNews = await resNews.json();
           setNews(dataNews);
@@ -96,7 +98,7 @@ export default function Home() {
 
       try {
         setIsLoadingMembers(true);
-        const resMembers = await fetch("http://localhost:3001/members");
+        const resMembers = await fetch(`${API_URL}/members`);
         if (resMembers.ok) {
           const dataMembers = await resMembers.json();
           setMembers(dataMembers);
