@@ -46,7 +46,9 @@ const NOMES_COMISSOES = [
   "Comissão de Cultura",
   "Comissão de Fraternidade e Ecumenismo",
   "Comissão de Assuntos Sociais e Comunitários",
-  "Comissão de Recreação e Desporto"
+  "Comissão de Recreação e Desporto",
+  "Coordenação dos Adolescentes",
+  "Conselheiros",
 ];
 
 // Cargos permitidos no Corpo Executivo
@@ -67,6 +69,12 @@ const CARGOS_DIRETIVO = [
   "secretária",
   "vice-secretário",
   "vice-secretária",
+  "coordenador",
+  "coordenadora",
+  "vice-coordenador",
+  "vice-coordenadora",
+  "conselheiro",
+  "conselheira"
 ];
 
 export default function Home() {

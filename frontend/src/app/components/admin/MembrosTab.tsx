@@ -785,7 +785,7 @@ const handleSaveEdit = async (e: React.FormEvent) => {
                 {/* Comissão */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                    Comissão
+                    Comissão / Funcão
                   </label>
                   <select
                     value={editingMember.commission || ""}
@@ -804,6 +804,8 @@ const handleSaveEdit = async (e: React.FormEvent) => {
                     <option value="Comissão de Fraternidade e Ecumenismo">Comissão de Fraternidade e Ecumenismo</option>
                     <option value="Comissão de Assuntos Sociais e Comunitários">Comissão de Assuntos Sociais e Comunitários</option>
                     <option value="Comissão de Recreação e Desporto">Comissão de Recreação e Desporto</option>
+                    <option value="Coordenação dos Adolescentes">Coordenação dos Adolescentes</option>
+                    <option value="Conselheiros">Conselheiro(a)</option>
                     {/* <option value="Comissão de Recreação e Desporto">Comissão de Recreação e Desporto</option>
                     <option value="Comissão de Finanças">Comissão de Finanças</option>
                     <option value="Comissão de Intercessão">Comissão de Intercessão</option>
@@ -850,6 +852,16 @@ const handleSaveEdit = async (e: React.FormEvent) => {
                       <option value="Secretária" className='bg-white'>Secretária</option>
                       <option value="Vice-Secretário" className='bg-white'>Vice-Secretário</option>
                       <option value="Vice-Secretária" className='bg-white'>Vice-Secretária</option>
+                    </optgroup>
+                    <optgroup label='Coordenador(a)' className='bg-red-200'>
+                      <option value="Coordenador" className='bg-white'>Coordenador</option>
+                      <option value="Coordenadora" className='bg-white'>Coordenadora</option>
+                      <option value="Vice-Coordenador" className='bg-white'>Vice-Coordenador</option>
+                      <option value="Vice-Coordenadora" className='bg-white'>Vice-Coordenadora</option>
+                    </optgroup>
+                    <optgroup label='Conselheiro' className='bg-red-200'>
+                      <option value="Conselheiro" className='bg-white'>Conselheiro</option>
+                      <option value="Conselheira" className='bg-white'>Conselheira</option>
                     </optgroup>
                   </select>
                 </div>
