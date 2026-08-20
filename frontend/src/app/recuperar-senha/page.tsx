@@ -108,7 +108,6 @@ export default function RecuperarSenhaPage() {
   };
 
   const handleCloseAccessModal = () => {
-    setShowAccessModal(false);
     router.push("/");
   };
 
