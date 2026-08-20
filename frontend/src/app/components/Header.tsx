@@ -17,6 +17,7 @@ export default function Header() {
     pathname === "/cadastro" ||
     pathname === "/noticias" ||
     pathname === "/biblioteca" ||
+    pathname === "/recuperar-senha" ||
     pathname.startsWith("/admin");
 
   const [isScrolled, setIsScrolled] = useState(false);
