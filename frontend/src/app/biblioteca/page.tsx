@@ -201,7 +201,7 @@ useEffect(() => {
             <div className="flex items-center gap-2 shrink-0">
               {/* Botão de abrir em nova aba como opção secundária */}
               <a
-                href={readingBook.pdfUrl}
+                href={`https://docs.google.com/gview?url=${encodeURIComponent(readingBook.pdfUrl)}&embedded=true`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hidden sm:flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition-all"
@@ -329,7 +329,7 @@ useEffect(() => {
                   {/* Conteúdo do Card */}
                   <div className="p-5 flex-1 flex flex-col justify-between">
                     <div>
-                      <h3 className="font-bold text-slate-900 line-clamp-1 text-base">
+                      <h3 className="font-bold text-slate-900 line-clamp-2 text-base">
                         {book.title}
                       </h3>
                     </div>

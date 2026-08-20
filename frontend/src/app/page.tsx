@@ -450,7 +450,7 @@ export default function Home() {
                 Unindo Jovens, Transformando Vidas.
               </h3>
               <p>
-                A JIMUE (Juventude da Igreja Metodista Unida em Angola) é uma organização cristã dedicada ao crescimento espiritual, social e intelectual dos jovens. O nosso objetivo é capacitar a juventude para vivenciar os valores do Evangelho e ser um agente de transformação na sociedade.
+                A JIMUE (Juventude da Igreja Metodista Unida de Emanuel) é uma organização cristã dedicada ao crescimento espiritual, social e intelectual dos jovens. O nosso objetivo é capacitar a juventude para vivenciar os valores do Evangelho e ser um agente de transformação na sociedade.
               </p>
               <p>
                 Através de encontros, conferências, ações sociais e programas comunitários, criamos um ambiente saudável onde cada jovem encontra o seu propósito e desenvolve o seu potencial de liderança.

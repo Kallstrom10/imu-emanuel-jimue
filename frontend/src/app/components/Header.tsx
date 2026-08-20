@@ -343,7 +343,7 @@ export default function Header() {
         </div>
 
         <div className="pt-6 border-t border-white/20 text-xs text-white/80 text-center font-medium">
-          Juventude JIMUE
+          Juventude de Emanuel
         </div>
       </aside>
     </>

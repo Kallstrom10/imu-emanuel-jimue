@@ -308,7 +308,7 @@ export default function LivrosTab() {
 
           <div className="flex-1 w-full bg-slate-900 relative">
             <iframe
-              src={readingBook.pdfUrl}
+              src={`https://docs.google.com/gview?url=${encodeURIComponent(readingBook.pdfUrl)}&embedded=true`}
               title={readingBook.title}
               className="w-full h-full border-0"
             />
