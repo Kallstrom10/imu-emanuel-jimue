@@ -8,6 +8,8 @@ import {
   Edit2,
   Trash2,
   Star,
+  BookOpen,
+  ExternalLink,
   X,
   Image as ImageIcon,
   FileText,
@@ -23,7 +25,8 @@ interface Book {
   title: string;
   coverUrl: string;
   pdfUrl: string;
-  rating: number;
+  rating?: number;
+  totalRatings?: number;
 }
 
 interface Notification {
@@ -54,6 +57,9 @@ export default function LivrosTab() {
   // API URL
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
+  // Estado para controlar o livro que está a ser lido no ecrã imersivo
+  const [readingBook, setReadingBook] = useState<Book | null>(null);
+
   // Função para exibir mensagem temporária
   const showNotification = (type: "success" | "error", message: string) => {
     setNotification({ type, message });
@@ -78,7 +84,7 @@ export default function LivrosTab() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [API_URL]);
 
   useEffect(() => {
     fetchBooks();
@@ -164,15 +170,6 @@ export default function LivrosTab() {
     }
   };
 
-  // Função para abrir o PDF
-  const handleViewBook = (pdfUrl: string) => {
-    if (pdfUrl && pdfUrl !== "#") {
-      window.open(pdfUrl, "_blank");
-    } else {
-      showNotification("error", "Ficheiro PDF não disponível para este livro.");
-    }
-  };
-
   // Executar a eliminação do livro
   const confirmDeleteBook = async () => {
     if (!deletingBook) return;
@@ -203,21 +200,42 @@ export default function LivrosTab() {
     book.title.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Componente de Estrelas (Visualização da Média)
-  const RenderStars = ({ rating }: { rating: number }) => {
+  // Componente de Estrelas, Média e Total de Avaliações
+  const RenderStars = ({
+    rating = 0,
+    totalRatings = 0,
+  }: {
+    rating?: number;
+    totalRatings?: number;
+  }) => {
+    const formattedRating = Number(rating).toFixed(1);
+
     return (
-      <div className="flex justify-center gap-1 my-3">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <Star
-            key={star}
-            size={16}
-            className={`${
-              star <= rating
-                ? "text-red-500 fill-red-500"
-                : "text-slate-200 fill-slate-100"
-            }`}
-          />
-        ))}
+      <div className="flex flex-col items-center gap-1.5 my-3">
+        {/* Estrelas do livro */}
+        <div className="flex items-center gap-1">
+          {[1, 2, 3, 4, 5].map((star) => (
+            <Star
+              key={star}
+              size={16}
+              className={`${
+                star <= Math.round(rating)
+                  ? "text-red-500 fill-red-500"
+                  : "text-slate-200 fill-slate-100"
+              }`}
+            />
+          ))}
+        </div>
+
+        {/* Média Numérica e Contagem de Avaliações */}
+        <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
+          <span className="font-bold text-slate-800">{formattedRating}</span>
+          <span>•</span>
+          <span>
+            {totalRatings}{" "}
+            {totalRatings === 1 ? "avaliação" : "avaliações"}
+          </span>
+        </div>
       </div>
     );
   };
@@ -250,9 +268,56 @@ export default function LivrosTab() {
         </div>
       )}
 
-      {/* 2. TOPO: Pesquisa e Botão Adicionar */}
+      {/* LEITOR IMERSIVO DE PDF */}
+      {readingBook && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-slate-950/90 backdrop-blur-lg animate-in fade-in duration-200">
+          <div className="bg-slate-900 text-white px-4 sm:px-6 py-3 flex items-center justify-between border-b border-slate-800 shadow-md shrink-0">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="p-2 bg-red-600/20 text-red-500 rounded-xl shrink-0">
+                <BookOpen size={20} />
+              </div>
+              <div className="overflow-hidden">
+                <h3 className="font-bold text-xs sm:text-sm text-white truncate max-w-xs sm:max-w-md">
+                  {readingBook.title}
+                </h3>
+                <p className="text-[11px] text-slate-400">Leitor Imersivo JIMUE</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <a
+                href={readingBook.pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden sm:flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition-all"
+                title="Abrir em separador externo"
+              >
+                <ExternalLink size={15} />
+                <span>Abrir externa</span>
+              </a>
+
+              <button
+                onClick={() => setReadingBook(null)}
+                className="p-2 bg-slate-800 hover:bg-red-600 text-slate-300 hover:text-white rounded-xl transition-all cursor-pointer"
+                title="Fechar leitor"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+
+          <div className="flex-1 w-full bg-slate-900 relative">
+            <iframe
+              src={readingBook.pdfUrl}
+              title={readingBook.title}
+              className="w-full h-full border-0"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* TOPO: Pesquisa e Botão Adicionar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        {/* Campo de Pesquisa */}
         <div className="relative w-full sm:w-96">
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
           <input
@@ -264,9 +329,7 @@ export default function LivrosTab() {
           />
         </div>
 
-        {/* Grupo do Contador e Botão */}
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-          {/* Indicador de Total de Livros */}
           <div className="w-full sm:w-auto px-5 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium text-slate-700 shadow-sm flex items-center justify-center gap-2 select-none">
             <span>Total de livros:</span>
             <span className="bg-red-50 text-red-600 px-2.5 py-0.5 rounded-full text-xs font-extrabold border border-red-100">
@@ -274,7 +337,6 @@ export default function LivrosTab() {
             </span>
           </div>
 
-          {/* Botão Adicionar */}
           <button
             onClick={openAddModal}
             className="w-full sm:w-auto px-6 py-3 bg-red-600 cursor-pointer hover:bg-red-700 text-white text-sm font-bold rounded-2xl transition-all shadow-lg shadow-red-600/20 flex items-center justify-center gap-2"
@@ -292,7 +354,7 @@ export default function LivrosTab() {
         </div>
       )}
 
-      {/* 3. GRID DE LIVROS */}
+      {/* GRID DE LIVROS */}
       {!isLoading && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filteredBooks.map((book) => (
@@ -309,18 +371,21 @@ export default function LivrosTab() {
                 />
               </div>
 
-              {/* Título e Estrelas (Média dos Usuários) */}
+              {/* Título, Média e Total de Avaliações */}
               <div className="flex-1 flex flex-col items-center text-center">
                 <h3 className="font-bold text-slate-800 text-base line-clamp-2 leading-tight">
                   {book.title}
                 </h3>
-                <RenderStars rating={book.rating || 0} />
+                <RenderStars
+                  rating={book.rating}
+                  totalRatings={book.totalRatings}
+                />
               </div>
 
               {/* Botões de Ação */}
               <div className="grid grid-cols-3 gap-2 mt-auto pt-4 border-t border-slate-100">
                 <button
-                  onClick={() => handleViewBook(book.pdfUrl)}
+                  onClick={() => setReadingBook(book)}
                   title="Ler Livro (PDF)"
                   className="flex items-center justify-center py-2.5 cursor-pointer rounded-xl bg-slate-50 text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
                 >
@@ -354,11 +419,10 @@ export default function LivrosTab() {
         </div>
       )}
 
-      {/* 4. MODAL ADICIONAR / EDITAR LIVRO */}
+      {/* MODAL ADICIONAR / EDITAR LIVRO */}
       {(isAddModalOpen || editingBook) && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
           <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            {/* Header do Modal */}
             <div className="bg-slate-900 text-white p-6 flex justify-between items-center">
               <h3 className="text-lg font-bold">
                 {editingBook ? "Editar Livro" : "Adicionar Novo Livro"}
@@ -371,10 +435,8 @@ export default function LivrosTab() {
               </button>
             </div>
 
-            {/* Formulário */}
             <form onSubmit={handleSaveBook}>
               <div className="p-6 space-y-5">
-                {/* Campo Imagem da Capa */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1.5">
                     Capa do Livro {editingBook && "(Deixe vazio para manter a atual)"}
@@ -400,7 +462,6 @@ export default function LivrosTab() {
                   </div>
                 </div>
 
-                {/* Campo Ficheiro PDF */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1.5">
                     Ficheiro PDF {editingBook && "(Deixe vazio para manter o atual)"}
@@ -418,7 +479,6 @@ export default function LivrosTab() {
                   </div>
                 </div>
 
-                {/* Campo Título */}
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1.5">
                     Título do Livro *
@@ -434,7 +494,6 @@ export default function LivrosTab() {
                 </div>
               </div>
 
-              {/* Footer do Modal */}
               <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
                 <button
                   type="button"
@@ -457,7 +516,7 @@ export default function LivrosTab() {
         </div>
       )}
 
-      {/* 5. MODAL DE CONFIRMAÇÃO DE ELIMINAÇÃO */}
+      {/* MODAL DE CONFIRMAÇÃO DE ELIMINAÇÃO */}
       {deletingBook && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
           <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl border border-slate-100 p-6 text-center animate-in fade-in zoom-in-95 duration-200">

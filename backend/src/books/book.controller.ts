@@ -8,37 +8,12 @@ import {
   Body,
   UseInterceptors,
   UploadedFiles,
+  BadRequestException,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
 import { BooksService } from './book.service';
-
-// Configuração do Multer idêntica à dos membros
-const multerOptions = {
-  storage: diskStorage({
-    destination: './uploads', // Garante que a pasta existe na raiz do backend
-    filename: (req, file, cb) => {
-      const ext = extname(file.originalname);
-
-      // Acede ao título do livro e formata para URL amigável
-      const tituloLivro = req.body.title
-        ? req.body.title
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '') // Remove acentos
-            .replace(/\s+/g, '-')            // Substitui espaços por hífens
-            .replace(/[^a-z0-9-]/g, '')      // Remove caracteres especiais
-        : 'livro-sem-titulo';
-
-      // Define o prefixo automaticamente: 'capa' para a imagem ou 'pdf' para o documento
-      const prefixo = file.fieldname === 'pdf' ? 'pdf' : 'capa';
-
-      const fileName = `${prefixo}-${tituloLivro}-${Date.now()}${ext}`;
-      cb(null, fileName);
-    },
-  }),
-};
+import { uploadToCloudinary, uploadPdfToCloudinary } from '../utils/upload.util';
 
 @Controller('books')
 export class BooksController {
@@ -49,9 +24,27 @@ export class BooksController {
     return this.booksService.findAll();
   }
 
+  // Novo Rota: Procurar o histórico de avaliações do utilizador logado
+  @Get('user-ratings/:userId')
+  async getUserRatings(@Param('userId') userId: string) {
+    return this.booksService.getUserRatings(userId);
+  }
+
   @Get(':id')
   async getOne(@Param('id') id: string) {
     return this.booksService.findOne(id);
+  }
+
+  // Nova Rota: Submeter avaliação de um livro
+  @Post(':id/rate')
+  async rateBook(
+    @Param('id') id: string,
+    @Body() body: { userId: string; rating: number },
+  ) {
+    if (!body.userId || !body.rating) {
+      throw new BadRequestException('userId e rating são obrigatórios');
+    }
+    return this.booksService.rateBook(id, body.userId, Number(body.rating));
   }
 
   @Post()
@@ -61,18 +54,41 @@ export class BooksController {
         { name: 'cover', maxCount: 1 },
         { name: 'pdf', maxCount: 1 },
       ],
-      multerOptions,
+      { storage: memoryStorage() },
     ),
   )
   async create(
-    @Body() body: { title: string; },
+    @Body() body: { title: string },
     @UploadedFiles()
     files: { cover?: Express.Multer.File[]; pdf?: Express.Multer.File[] },
   ) {
-    const serverUrl = process.env.SERVER_URL || 'http://localhost:3001';
+    let coverUrl = '';
+    let pdfUrl = '';
 
-    const coverUrl = files?.cover?.[0] ? `${serverUrl}/uploads/${files.cover[0].filename}` : '';
-    const pdfUrl = files?.pdf?.[0] ? `${serverUrl}/uploads/${files.pdf[0].filename}` : '';
+    const tituloSanitizado = body.title
+      ? body.title
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/[^a-z0-9-]/g, '')
+      : 'livro';
+
+    if (files?.cover?.[0]) {
+      coverUrl = await uploadToCloudinary(
+        'livros',
+        `capa-${tituloSanitizado}-${Date.now()}`,
+        files.cover[0].buffer,
+      );
+    }
+
+    if (files?.pdf?.[0]) {
+      pdfUrl = await uploadPdfToCloudinary(
+        'livros/pdfs',
+        `livro-${tituloSanitizado}-${Date.now()}`,
+        files.pdf[0].buffer,
+      );
+    }
 
     return this.booksService.create({
       title: body.title,
@@ -88,26 +104,41 @@ export class BooksController {
         { name: 'cover', maxCount: 1 },
         { name: 'pdf', maxCount: 1 },
       ],
-      multerOptions,
+      { storage: memoryStorage() },
     ),
   )
   async update(
     @Param('id') id: string,
-    @Body() body: { title?: string; },
+    @Body() body: { title?: string },
     @UploadedFiles()
     files: { cover?: Express.Multer.File[]; pdf?: Express.Multer.File[] },
   ) {
-    const serverUrl = process.env.SERVER_URL || 'http://localhost:3001';
     const updateData: any = {};
-
     if (body.title) updateData.title = body.title;
-    
+
+    const tituloSanitizado = body.title
+      ? body.title
+          .toLowerCase()
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .replace(/\s+/g, '-')
+          .replace(/[^a-z0-9-]/g, '')
+      : 'livro';
+
     if (files?.cover?.[0]) {
-      updateData.coverUrl = `${serverUrl}/uploads/${files.cover[0].filename}`;
+      updateData.coverUrl = await uploadToCloudinary(
+        'livros',
+        `capa-${tituloSanitizado}-${Date.now()}`,
+        files.cover[0].buffer,
+      );
     }
 
     if (files?.pdf?.[0]) {
-      updateData.pdfUrl = `${serverUrl}/uploads/${files.pdf[0].filename}`;
+      updateData.pdfUrl = await uploadPdfToCloudinary(
+        'livros/pdfs',
+        `livro-${tituloSanitizado}-${Date.now()}`,
+        files.pdf[0].buffer,
+      );
     }
 
     return this.booksService.update(id, updateData);

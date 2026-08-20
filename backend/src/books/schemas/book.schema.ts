@@ -13,6 +13,18 @@ export class Book {
 
   @Prop({ required: false, default: '' })
   pdfUrl!: string;
+
+  @Prop({ default: 0 })
+  rating!: number; // Média geral (1 a 5)
+
+  @Prop({ default: 0 })
+  totalRatings!: number; // Total de avaliações recebidas
+
+  @Prop({
+    type: [{ userId: String, rating: Number }],
+    default: [],
+  })
+  ratings!: { userId: string; rating: number }[];
 }
 
 export const BookSchema = SchemaFactory.createForClass(Book);

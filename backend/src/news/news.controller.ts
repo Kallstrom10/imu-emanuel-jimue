@@ -10,33 +10,9 @@ import {
   UploadedFile,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { diskStorage } from 'multer';
-import { extname } from 'path';
+import { memoryStorage } from 'multer';
 import { NewsService } from './news.service';
-
-// Configuração do Multer com nomenclatura personalizada
-const multerOptions = {
-  storage: diskStorage({
-    destination: './uploads',
-    filename: (req, file, cb) => {
-      const ext = extname(file.originalname);
-
-      // Tratamento do título: remove acentos, caracteres especiais e substitui espaços por hífens
-      const tituloNoticia = req.body.title
-        ? req.body.title
-            .toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '')
-            .replace(/[^a-z0-9\s-]/g, '')
-            .trim()
-            .replace(/\s+/g, '-')
-        : 'sem-titulo';
-
-      const fileName = `noticia-${tituloNoticia}-${Date.now()}${ext}`;
-      cb(null, fileName);
-    },
-  }),
-};
+import { uploadToCloudinary } from '../utils/upload.util';
 
 @Controller('news')
 export class NewsController {
@@ -48,20 +24,38 @@ export class NewsController {
   }
 
   @Post()
-  @UseInterceptors(FileInterceptor('image', multerOptions))
+  @UseInterceptors(FileInterceptor('image', { storage: memoryStorage() }))
   async create(
     @Body('title') title: string,
     @Body('content') content: string,
     @Body('author') author: string,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    const serverUrl = process.env.SERVER_URL || 'http://localhost:3001';
-    const imageUrl = file ? `${serverUrl}/uploads/${file.filename}` : undefined;
+    let imageUrl: string | undefined = undefined;
+
+    if (file) {
+      const tituloNoticia = title
+        ? title
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .trim()
+            .replace(/\s+/g, '-')
+        : 'noticia';
+
+      imageUrl = await uploadToCloudinary(
+        'noticias',
+        `noticia-${tituloNoticia}-${Date.now()}`,
+        file.buffer,
+      );
+    }
+
     return this.newsService.create(title, content, author, imageUrl);
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('image', multerOptions))
+  @UseInterceptors(FileInterceptor('image', { storage: memoryStorage() }))
   async update(
     @Param('id') id: string,
     @Body('title') title?: string,
@@ -69,8 +63,26 @@ export class NewsController {
     @Body('author') author?: string,
     @UploadedFile() file?: Express.Multer.File,
   ) {
-    const serverUrl = process.env.SERVER_URL || 'http://localhost:3001';
-    const imageUrl = file ? `${serverUrl}/uploads/${file.filename}` : undefined;
+    let imageUrl: string | undefined = undefined;
+
+    if (file) {
+      const tituloNoticia = title
+        ? title
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[^a-z0-9\s-]/g, '')
+            .trim()
+            .replace(/\s+/g, '-')
+        : 'noticia';
+
+      imageUrl = await uploadToCloudinary(
+        'noticias',
+        `noticia-${tituloNoticia}-${Date.now()}`,
+        file.buffer,
+      );
+    }
+
     return this.newsService.update(id, title, content, author, imageUrl);
   }
 
@@ -79,3 +91,7 @@ export class NewsController {
     return this.newsService.delete(id);
   }
 }
+
+
+
+// jimue.74.emanuel@gmail.com - JIMUEemanuel74

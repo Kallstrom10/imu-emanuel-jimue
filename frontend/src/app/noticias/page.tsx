@@ -23,28 +23,28 @@ export default function NoticiasPage() {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
-// Carregamento dinâmico de dados da API
-useEffect(() => {
-  async function fetchNews() {
-    try {
-      setIsLoading(true);
-      const res = await fetch(`${API_URL}/news`);
+  // Carregamento dinâmico de dados da API
+  useEffect(() => {
+    async function fetchNews() {
+      try {
+        setIsLoading(true);
+        const res = await fetch(`${API_URL}/news`);
 
-      if (!res.ok) {
-        throw new Error("Erro ao buscar as notícias da API");
+        if (!res.ok) {
+          throw new Error("Erro ao buscar as notícias da API");
+        }
+
+        const data: NewsItem[] = await res.json();
+        setNews(data);
+      } catch (error) {
+        console.error("Erro ao carregar notícias:", error);
+      } finally {
+        setIsLoading(false);
       }
-
-      const data: NewsItem[] = await res.json();
-      setNews(data);
-    } catch (error) {
-      console.error("Erro ao carregar notícias:", error);
-    } finally {
-      setIsLoading(false);
     }
-  }
 
-  fetchNews();
-}, []);
+    fetchNews();
+  }, [API_URL]);
 
   const formatDate = (dateString?: string) => {
     if (!dateString) return "Data desconhecida";
@@ -100,7 +100,7 @@ useEffect(() => {
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
               >
                 <X size={14} />
               </button>
@@ -211,7 +211,7 @@ useEffect(() => {
         )}
       </main>
 
-      {/* ================= MODAL DE LEITURA DA NOTÍCIA (PÁGINA DE NOTÍCIAS) ================= */}
+      {/* ================= MODAL DE LEITURA DA NOTÍCIA ================= */}
       {selectedNews && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
           <div className="bg-white w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
@@ -231,7 +231,7 @@ useEffect(() => {
                     </span>
                     {selectedNews.updatedAt &&
                       new Date(selectedNews.updatedAt).getTime() > new Date(selectedNews.createdAt || 0).getTime() + 1000 && (
-                        <span className="italic text-slate-400 ml">
+                        <span className="italic text-slate-400 ml-1">
                           <span className="mr-2">•</span> Atualizado em {formatDate(selectedNews.updatedAt)}
                         </span>
                       )}
@@ -246,7 +246,7 @@ useEffect(() => {
               </button>
             </div>
 
-            {/* Corpo com Scroll Interno (Rolável) */}
+            {/* Corpo com Scroll Interno */}
             <div className="overflow-y-auto flex-1">
               {/* Imagem em destaque */}
               {selectedNews.imageUrl && (

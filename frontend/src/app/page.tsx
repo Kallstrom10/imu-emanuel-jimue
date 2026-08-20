@@ -39,7 +39,7 @@ interface MemberItem {
   profilePhoto?: string;
 }
 
-// Relação fixa das 15 comissões
+// Relação fixa das comissões
 const NOMES_COMISSOES = [
   "Comissão de Informação e Comunicação",
   "Comissão de Evangelismo",
@@ -74,7 +74,7 @@ const CARGOS_DIRETIVO = [
   "vice-coordenador",
   "vice-coordenadora",
   "conselheiro",
-  "conselheira"
+  "conselheira",
 ];
 
 export default function Home() {
@@ -119,7 +119,7 @@ export default function Home() {
     };
 
     fetchData();
-  }, []);
+  }, [API_URL]);
 
   // Avanço automático do carrossel a cada 2 segundos
   useEffect(() => {
@@ -190,8 +190,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 scroll-smooth pt-20">
-      
-      {/* SEÇÃO HERO: BEM-VINDO */}
+      {/* SEÇÃO HERO */}
       <section id="inicio" className="container mx-auto px-6 py-16 text-center">
         <div className="max-w-3xl mx-auto space-y-4">
           <span className="inline-block px-4 py-1.5 bg-red-100 text-red-600 rounded-full text-xs font-bold uppercase tracking-wider">
@@ -206,7 +205,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SEÇÃO 1: JIMUE (CORPO EXECUTIVO E DIRETIVO DINÂMICOS) */}
+      {/* SEÇÃO 1: JIMUE */}
       <section id="jimue" className="py-20 bg-white border-y border-slate-100 scroll-mt-17">
         <div className="container mx-auto px-6">
           <div className="flex items-center gap-3 mb-12">
@@ -356,12 +355,11 @@ export default function Home() {
             Nenhuma notícia publicada de momento.
           </div>
         ) : (
-            <div 
-              className="relative max-w-5xl mx-auto flex items-center justify-center min-h-[420px]"
-              onMouseEnter={() => setIsHovered(true)}
-              onMouseLeave={() => setIsHovered(false)}
-            >
-            {/* Botão Anterior */}
+          <div 
+            className="relative max-w-5xl mx-auto flex items-center justify-center min-h-[420px]"
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+          >
             <button
               onClick={handlePrevNews}
               className="absolute left-0 z-30 p-3 bg-white/90 shadow-xl border border-slate-200 text-red-600 rounded-full hover:bg-red-600 hover:text-white transition-all cursor-pointer"
@@ -369,7 +367,6 @@ export default function Home() {
               <ChevronLeft size={24} />
             </button>
 
-            {/* Grid 3D de Cards */}
             <div className="flex items-center justify-center gap-4 w-full px-12 overflow-visible">
               {getVisibleNews().map(({ item, position }) => {
                 const isCenter = position === "center";
@@ -416,7 +413,6 @@ export default function Home() {
               })}
             </div>
 
-            {/* Botão Próximo */}
             <button
               onClick={handleNextNews}
               className="absolute right-0 z-30 p-3 bg-white/90 shadow-xl border border-slate-200 text-red-600 rounded-full hover:bg-red-600 hover:text-white transition-all cursor-pointer"
@@ -438,7 +434,6 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            {/* Imagem do lado esquerdo */}
             <div className="w-full aspect-video sm:aspect-square max-h-[400px] rounded-3xl overflow-hidden bg-slate-100 border border-slate-200 shadow-md">
               <img
                 src="/foto-jimue.jpg"
@@ -450,7 +445,6 @@ export default function Home() {
               />
             </div>
 
-            {/* Texto do lado direito */}
             <div className="space-y-5 text-slate-600 text-sm sm:text-base leading-relaxed">
               <h3 className="text-2xl font-bold text-slate-900">
                 Unindo Jovens, Transformando Vidas.
@@ -476,7 +470,6 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Card Telefone */}
           <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center text-center hover:border-red-200 transition-all">
             <div className="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-6">
               <Phone size={28} />
@@ -486,7 +479,6 @@ export default function Home() {
             <p className="text-slate-500 text-xs sm:text-sm">+244 928 246 352</p>
           </div>
 
-          {/* Card Localização */}
           <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center text-center hover:border-red-200 transition-all">
             <div className="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-6">
               <MapPin size={28} />
@@ -496,7 +488,6 @@ export default function Home() {
             <p className="text-slate-500 text-xs sm:text-sm">Luanda - Angola</p>
           </div>
 
-          {/* Card Emails */}
           <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center text-center hover:border-red-200 transition-all">
             <div className="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-6">
               <Mail size={28} />
@@ -508,12 +499,10 @@ export default function Home() {
         </div>
       </section>
 
-      {/* MODAL LER NOTÍCIA COMPLETA (PÁGINA INICIAL) */}
+      {/* MODAL LER NOTÍCIA COMPLETA */}
       {viewingNews && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
           <div className="bg-white w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
-            
-            {/* Cabeçalho do Modal (Fixo) */}
             <div className="bg-slate-900 text-white p-6 flex justify-between items-start gap-4 shrink-0">
               <div>
                 <span className="inline-block px-2.5 py-1 bg-red-600 text-white text-[10px] font-bold rounded-lg uppercase tracking-wider mb-2">
@@ -524,14 +513,8 @@ export default function Home() {
                   <div className="text-xs text-slate-400 mt-1 flex items-center gap-3 flex-wrap">
                     <span className="flex items-center gap-1.5">
                       <Clock size={12} />
-                      Publicado em {formatDate(viewingNews.createdAt)} 
+                      Publicado em {formatDate(viewingNews.createdAt)}
                     </span>
-                    {viewingNews.updatedAt &&
-                      new Date(viewingNews.updatedAt).getTime() > new Date(viewingNews.createdAt || 0).getTime() + 1000 && (
-                        <span className="italic text-slate-400 ml">
-                          <span className="mr-2">•</span> Atualizado em {formatDate(viewingNews.updatedAt)}
-                        </span>
-                      )}
                   </div>
                 )}
               </div>
@@ -543,9 +526,7 @@ export default function Home() {
               </button>
             </div>
 
-            {/* Corpo com Scroll Interno (Rolável) */}
             <div className="overflow-y-auto flex-1">
-              {/* Imagem em destaque */}
               {viewingNews.imageUrl && (
                 <div className="w-full h-64 bg-slate-100 overflow-hidden">
                   <img
@@ -556,7 +537,6 @@ export default function Home() {
                 </div>
               )}
 
-              {/* Corpo do Texto */}
               <div className="p-6">
                 <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">
                   {viewingNews.content}
@@ -564,7 +544,6 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Rodapé do Modal (Fixo) */}
             <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end shrink-0">
               <button
                 onClick={() => setViewingNews(null)}

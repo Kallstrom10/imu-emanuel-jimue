@@ -57,6 +57,44 @@ export default function NoticiasTab() {
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
+  // Função para garantir que a imagem do Cloudinary ou servidor carrega corretamente
+  const getImageUrl = (url?: string) => {
+    if (!url || typeof url !== "string" || url.trim() === "") {
+      return "/placeholder.png"; // Imagem padrão se não houver foto
+    }
+
+    const cleanUrl = url.trim();
+
+    // Se a URL for do Cloudinary ou um link externo completo (http, https, //)
+    if (
+      cleanUrl.startsWith("http://") ||
+      cleanUrl.startsWith("https://") ||
+      cleanUrl.startsWith("//") ||
+      cleanUrl.includes("cloudinary.com") ||
+      cleanUrl.includes("res.cloudinary")
+    ) {
+      // Força HTTPS para evitar erro de Mixed Content em produção
+      if (cleanUrl.startsWith("http://")) {
+        return cleanUrl.replace("http://", "https://");
+      }
+      if (cleanUrl.startsWith("//")) {
+        return `https:${cleanUrl}`;
+      }
+      if (!cleanUrl.startsWith("http")) {
+        return `https://${cleanUrl}`;
+      }
+      return cleanUrl;
+    }
+
+    // Caso contrário, junta com a URL da API (para ficheiros locais/antigos)
+    const formattedBaseUrl = API_URL.endsWith("/")
+      ? API_URL.slice(0, -1)
+      : API_URL;
+    const formattedUrl = cleanUrl.startsWith("/") ? cleanUrl : `/${cleanUrl}`;
+
+    return `${formattedBaseUrl}${formattedUrl}`;
+  };
+
   const showNotification = (type: "success" | "error", message: string) => {
     setNotification({ type, message });
     setTimeout(() => {
@@ -80,7 +118,7 @@ export default function NoticiasTab() {
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [API_URL]);
 
   useEffect(() => {
     fetchNews();
@@ -289,9 +327,13 @@ export default function NoticiasTab() {
               <div className="relative w-full aspect-video mb-4 overflow-hidden rounded-2xl bg-slate-100 flex items-center justify-center">
                 {item.imageUrl ? (
                   <img
-                    src={item.imageUrl}
+                    src={getImageUrl(item.imageUrl)}
                     alt={`Imagem da notícia: ${item.title}`}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src =
+                        "/placeholder.png";
+                    }}
                   />
                 ) : (
                   <Newspaper size={40} className="text-slate-300" />
@@ -355,7 +397,9 @@ export default function NoticiasTab() {
                 <span className="inline-block px-2.5 py-1 bg-red-600 text-white text-[10px] font-bold rounded-lg uppercase tracking-wider mb-2">
                   Gestão de Notícias
                 </span>
-                <h3 className="text-lg font-bold leading-snug">{viewingNews.title}</h3>
+                <h3 className="text-lg font-bold leading-snug">
+                  {viewingNews.title}
+                </h3>
                 {viewingNews.createdAt && (
                   <div className="text-xs text-slate-400 mt-1 flex items-center gap-3 flex-wrap">
                     <span className="flex items-center gap-1.5">
@@ -391,9 +435,13 @@ export default function NoticiasTab() {
               {viewingNews.imageUrl && (
                 <div className="w-full h-64 bg-slate-100 overflow-hidden">
                   <img
-                    src={viewingNews.imageUrl}
+                    src={getImageUrl(viewingNews.imageUrl)}
                     alt={viewingNews.title}
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      (e.currentTarget as HTMLImageElement).src =
+                        "/placeholder.png";
+                    }}
                   />
                 </div>
               )}
@@ -452,6 +500,16 @@ export default function NoticiasTab() {
                           className="w-full h-full object-cover"
                           alt="Preview"
                         />
+                      ) : editingNews?.imageUrl ? (
+                        <img
+                          src={getImageUrl(editingNews.imageUrl)}
+                          className="w-full h-full object-cover"
+                          alt="Preview Atual"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).src =
+                              "/placeholder.png";
+                          }}
+                        />
                       ) : (
                         <ImageIcon size={24} />
                       )}
@@ -459,7 +517,9 @@ export default function NoticiasTab() {
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                      onChange={(e) =>
+                        setImageFile(e.target.files?.[0] || null)
+                      }
                       className="block w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 file:cursor-pointer transition-all"
                     />
                   </div>
@@ -522,23 +582,44 @@ export default function NoticiasTab() {
                         Corpo Diretivo
                       </option>
                     </optgroup>
-                    <optgroup label="Comissões de Trabalho" className="bg-slate-100 font-bold">
-                      <option value="Comissão de Informação e Comunicação" className="bg-white">
+                    <optgroup
+                      label="Comissões de Trabalho"
+                      className="bg-slate-100 font-bold"
+                    >
+                      <option
+                        value="Comissão de Informação e Comunicação"
+                        className="bg-white"
+                      >
                         Comissão de Informação e Comunicação
                       </option>
-                      <option value="Comissão de Evangelismo" className="bg-white">
+                      <option
+                        value="Comissão de Evangelismo"
+                        className="bg-white"
+                      >
                         Comissão de Evangelismo
                       </option>
-                      <option value="Comissão de Cultura" className="bg-white">
+                      <option
+                        value="Comissão de Cultura"
+                        className="bg-white"
+                      >
                         Comissão de Cultura
                       </option>
-                      <option value="Comissão de Fraternidade e Ecumenismo" className="bg-white">
+                      <option
+                        value="Comissão de Fraternidade e Ecumenismo"
+                        className="bg-white"
+                      >
                         Comissão de Fraternidade e Ecumenismo
                       </option>
-                      <option value="Comissão de Assuntos Sociais e Comunitários" className="bg-white">
+                      <option
+                        value="Comissão de Assuntos Sociais e Comunitários"
+                        className="bg-white"
+                      >
                         Comissão de Assuntos Sociais e Comunitários
                       </option>
-                      <option value="Comissão de Recreação e Desporto" className="bg-white">
+                      <option
+                        value="Comissão de Recreação e Desporto"
+                        className="bg-white"
+                      >
                         Comissão de Recreação e Desporto
                       </option>
                     </optgroup>
@@ -560,7 +641,9 @@ export default function NoticiasTab() {
                   disabled={isSubmitting}
                   className="px-6 py-3 rounded-xl cursor-pointer bg-red-600 hover:bg-red-700 text-white font-bold text-xs transition-all shadow-md shadow-red-600/20 flex items-center gap-2"
                 >
-                  {isSubmitting && <Loader2 className="animate-spin" size={14} />}
+                  {isSubmitting && (
+                    <Loader2 className="animate-spin" size={14} />
+                  )}
                   Publicar Notícia
                 </button>
               </div>

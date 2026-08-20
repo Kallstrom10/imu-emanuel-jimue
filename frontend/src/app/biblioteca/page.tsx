@@ -12,6 +12,7 @@ import {
   FileText,
   ShieldAlert,
   X,
+  ExternalLink,
 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
 
@@ -27,7 +28,7 @@ export interface Book {
 }
 
 export default function BibliotecaPage() {
-  const { user, isLoading: isAuthLoading } = useAuth();
+  const { user, token, isLoading: isAuthLoading } = useAuth() as any;
   const router = useRouter();
 
   const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
@@ -36,7 +37,11 @@ export default function BibliotecaPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [userRatings, setUserRatings] = useState<{ [key: string | number]: number }>({});
+  const [hoverRatings, setHoverRatings] = useState<{ [key: string | number]: number }>({});
   const [showAccessModal, setShowAccessModal] = useState(false);
+  
+  // Estado para controlar o livro que está a ser lido no ecrã imersivo
+  const [readingBook, setReadingBook] = useState<Book | null>(null);
 
   // Verificação de Autenticação (Apenas utilizadores logados)
   useEffect(() => {
@@ -72,23 +77,70 @@ export default function BibliotecaPage() {
     }
 
     fetchBooks();
-  }, []);
+  }, [API_URL]);
 
   // 2. Avaliar um livro (1 a 5 estrelas)
   const handleRateBook = async (bookId: string | number, selectedRating: number) => {
-    // Atualização local imediata para feedback rápido do utilizador
+    // Atualização local imediata da escolha do utilizador
     setUserRatings((prev) => ({ ...prev, [bookId]: selectedRating }));
 
     try {
-      await fetch(`${API_URL}/books/${bookId}/rate`, {
+      const response = await fetch(`${API_URL}/books/${bookId}/rate`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rating: selectedRating }),
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        body: JSON.stringify({
+          rating: selectedRating,
+          userId: user?.id || user?._id,
+        }),
       });
+
+      if (response.ok) {
+        const updatedData = await response.json();
+
+        // Se o backend retornar os dados atualizados do livro, atualiza o estado local
+        if (updatedData) {
+          setBooks((prevBooks) =>
+            prevBooks.map((b) => {
+              const bKey = b.id || b._id;
+              if (bKey === bookId) {
+                return {
+                  ...b,
+                  rating: updatedData.rating ?? updatedData.averageRating ?? b.rating,
+                  totalRatings: updatedData.totalRatings ?? b.totalRatings,
+                };
+              }
+              return b;
+            })
+          );
+        }
+      }
     } catch (error) {
       console.error("Erro ao enviar avaliação:", error);
     }
   };
+
+  // Carregar as avaliações prévias do utilizador logado
+useEffect(() => {
+  async function fetchUserRatings() {
+    const userId = user?.id || user?._id;
+    if (!userId) return;
+
+    try {
+      const res = await fetch(`${API_URL}/books/user-ratings/${userId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setUserRatings(data); // Preenche o estado com as notas já gravadas no DB
+      }
+    } catch (error) {
+      console.error("Erro ao carregar avaliações do utilizador:", error);
+    }
+  }
+
+  fetchUserRatings();
+}, [user, API_URL]);
 
   // 3. Filtragem de livros pelo título
   const filteredBooks = books.filter((book) =>
@@ -125,6 +177,58 @@ export default function BibliotecaPage() {
             >
               Voltar à Página Inicial
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* LEITOR IMERSIVO DE PDF (MODAL/OVERLAY FULLSCREEN) */}
+      {readingBook && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-slate-950/90 backdrop-blur-lg animate-in fade-in duration-200">
+          {/* Barra de Ferramentas / Header do Leitor */}
+          <div className="bg-slate-900 text-white px-4 sm:px-6 py-3 flex items-center justify-between border-b border-slate-800 shadow-md shrink-0">
+            <div className="flex items-center gap-3 overflow-hidden">
+              <div className="p-2 bg-red-600/20 text-red-500 rounded-xl shrink-0">
+                <BookOpen size={20} />
+              </div>
+              <div className="overflow-hidden">
+                <h3 className="font-bold text-xs sm:text-sm text-white truncate max-w-xs sm:max-w-md">
+                  {readingBook.title}
+                </h3>
+                <p className="text-[11px] text-slate-400">Leitor Imersivo JIMUE</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              {/* Botão de abrir em nova aba como opção secundária */}
+              <a
+                href={readingBook.pdfUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hidden sm:flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition-all"
+                title="Abrir em separador externo"
+              >
+                <ExternalLink size={15} />
+                <span>Abrir externa</span>
+              </a>
+
+              {/* Botão de Fechar */}
+              <button
+                onClick={() => setReadingBook(null)}
+                className="p-2 bg-slate-800 hover:bg-red-600 text-slate-300 hover:text-white rounded-xl transition-all cursor-pointer"
+                title="Fechar leitor"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+
+          {/* Área Principal de Exibição do PDF */}
+          <div className="flex-1 w-full bg-slate-900 relative">
+            <iframe
+              src={readingBook.pdfUrl}
+              title={readingBook.title}
+              className="w-full h-full border-0"
+            />
           </div>
         </div>
       )}
@@ -197,11 +301,13 @@ export default function BibliotecaPage() {
           /* GRID DE CARDS DOS LIVROS */
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {filteredBooks.map((book) => {
-              const currentRating = userRatings[book.id] || book.rating || 0;
+              const bookKey = book.id || book._id;
+              const currentRating = userRatings[bookKey] || 0;
+              const activeRating = hoverRatings[bookKey] || currentRating;
 
               return (
                 <div
-                  key={book.id || book._id}
+                  key={bookKey}
                   className="bg-white rounded-3xl border border-slate-200/60 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-all duration-200"
                 >
                   {/* Capa do Livro */}
@@ -231,21 +337,39 @@ export default function BibliotecaPage() {
                     <div className="space-y-4 pt-2">
                       {/* Avaliação em Estrelas (1 a 5) */}
                       <div>
-                        <span className="text-[11px] font-semibold text-slate-400 block mb-1">
-                          Sua Avaliação
-                        </span>
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-[11px] font-semibold text-slate-400 block">
+                            Sua Avaliação
+                          </span>
+                          {book.rating !== undefined && book.rating > 0 && (
+                            <span className="text-[11px] font-bold text-amber-500 flex items-center gap-1">
+                              ★ {Number(book.rating).toFixed(1)}
+                              {book.totalRatings ? ` (${book.totalRatings})` : ""}
+                            </span>
+                          )}
+                        </div>
+
+                        <div
+                          className="flex items-center gap-1"
+                          onMouseLeave={() =>
+                            setHoverRatings((prev) => ({ ...prev, [bookKey]: 0 }))
+                          }
+                        >
                           {[1, 2, 3, 4, 5].map((star) => (
                             <button
                               key={star}
-                              onClick={() => handleRateBook(book.id, star)}
+                              type="button"
+                              onClick={() => handleRateBook(bookKey, star)}
+                              onMouseEnter={() =>
+                                setHoverRatings((prev) => ({ ...prev, [bookKey]: star }))
+                              }
                               className="p-0.5 text-amber-400 hover:scale-110 transition-transform cursor-pointer focus:outline-none"
                               title={`Avaliar com ${star} estrela(s)`}
                             >
                               <Star
                                 size={18}
                                 className={
-                                  star <= currentRating
+                                  star <= activeRating
                                     ? "fill-amber-400 text-amber-400"
                                     : "text-slate-300 fill-slate-100"
                                 }
@@ -255,16 +379,14 @@ export default function BibliotecaPage() {
                         </div>
                       </div>
 
-                      {/* Botão Ler Livro (Abre PDF em nova aba) */}
-                      <a
-                        href={book.pdfUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-colors shadow-sm shadow-red-500/20"
+                      {/* Botão Ler Livro (Abre Leitor Imersivo em iframe) */}
+                      <button
+                        onClick={() => setReadingBook(book)}
+                        className="w-full flex items-center justify-center gap-2 bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition-colors shadow-sm shadow-red-500/20 cursor-pointer"
                       >
                         <BookOpen size={16} />
                         <span>Ler livro</span>
-                      </a>
+                      </button>
                     </div>
                   </div>
                 </div>
