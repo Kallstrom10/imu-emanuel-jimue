@@ -27,7 +27,13 @@ export async function uploadToCloudinary(
       },
       (error, result) => {
         if (error) return reject(error);
-        resolve(result?.secure_url || '');
+
+        const rawUrl = result?.secure_url || '';
+
+        // Encapsula a URL do Cloudinary no visualizador universal para iFrames
+        const embeddedViewerUrl = `https://docs.google.com/gview?embedded=true&url=${encodeURIComponent(rawUrl)}`;
+
+        resolve(embeddedViewerUrl);
       },
     );
 
