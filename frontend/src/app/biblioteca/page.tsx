@@ -15,6 +15,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import { useAuth } from "@/app/context/AuthContext";
+import { PdfViewer } from "../components/PDFViwer";
 
 // Interface para a estrutura do Livro
 export interface Book {
@@ -201,7 +202,7 @@ useEffect(() => {
             <div className="flex items-center gap-2 shrink-0">
               {/* Botão de abrir em nova aba como opção secundária */}
               <a
-                href={`https://docs.google.com/gview?url=${encodeURIComponent(readingBook.pdfUrl)}&embedded=true`}
+                href={readingBook.pdfUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="hidden sm:flex items-center gap-2 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold rounded-xl transition-all"
@@ -223,12 +224,8 @@ useEffect(() => {
           </div>
 
           {/* Área Principal de Exibição do PDF */}
-          <div className="flex-1 w-full bg-slate-900 relative">
-            <iframe
-              src={readingBook.pdfUrl}
-              title={readingBook.title}
-              className="w-full h-full border-0"
-            />
+          <div className="flex-1 w-full bg-slate-950 relative overflow-hidden">
+            <PdfViewer url={readingBook.pdfUrl} />
           </div>
         </div>
       )}
