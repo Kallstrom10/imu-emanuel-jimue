@@ -10,6 +10,9 @@ import { BooksModule } from './books/book.module';
 import { NewsModule } from './news/news.module';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+import { NotificationsModule } from './notifications/notifications.module';
+import { TasksService } from './tasks/tasks.service';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -22,6 +25,8 @@ import { UsersModule } from './users/users.module';
       rootPath: join(process.cwd(), 'uploads'),
       serveRoot: '/uploads',
     }),
+
+    ScheduleModule.forRoot(),
 
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -39,6 +44,9 @@ import { UsersModule } from './users/users.module';
     NewsModule,
     AuthModule,
     UsersModule,
+    NotificationsModule,
+    ScheduleModule,
   ],
+  providers: [TasksService],
 })
 export class AppModule {}

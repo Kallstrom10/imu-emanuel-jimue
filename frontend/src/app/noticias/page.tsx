@@ -70,18 +70,18 @@ export default function NoticiasPage() {
   }, [news, searchTerm]);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300 flex flex-col font-sans">
       
       {/* topo: Navegação e Barra de Pesquisa */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+      <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shadow-sm transition-colors duration-300">
         <div className="container mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           
           {/* Canto Esquerdo: Voltar para o Site */}
           <Link
             href="/"
-            className="flex items-center gap-2 text-slate-600 hover:text-red-600 text-xs sm:text-sm font-bold transition-colors group"
+            className="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-500 text-xs sm:text-sm font-bold transition-colors group"
           >
-            <div className="p-2 rounded-xl bg-slate-100 group-hover:bg-red-50 text-slate-600 group-hover:text-red-600 transition-colors">
+            <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 group-hover:bg-red-50 dark:group-hover:bg-red-900/30 text-slate-600 dark:text-slate-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
               <ArrowLeft size={18} />
             </div>
             <span>Voltar para o site</span>
@@ -89,18 +89,18 @@ export default function NoticiasPage() {
 
           {/* Canto Direito: Barra de Pesquisa */}
           <div className="relative w-full sm:w-80">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
             <input
               type="text"
               placeholder="Pesquisar por título ou conteúdo..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500 transition-all text-slate-800 placeholder-slate-400"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500 transition-all text-slate-800 dark:text-slate-200 placeholder-slate-400 dark:placeholder-slate-500"
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer transition-colors"
               >
                 <X size={14} />
               </button>
@@ -114,30 +114,30 @@ export default function NoticiasPage() {
         
         {/* Título da Página */}
         <div className="mb-8 text-center sm:text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-50 text-red-600 text-xs font-bold mb-3 border border-red-100">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-xs font-bold mb-3 border border-red-100 dark:border-red-500/20 transition-colors">
             <Newspaper size={14} />
             <span>Informa-te & Acompanha</span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white transition-colors">
             Notícias e Atualizações
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 mt-1 max-w-2xl">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1 max-w-2xl transition-colors">
             Fica por dentro de todas as atividades, eventos e comunicados oficiais da juventude JIMUE.
           </p>
         </div>
 
         {/* Estado de Carregamento */}
         {isLoading ? (
-          <div className="py-20 text-center text-slate-400 font-medium text-xs sm:text-sm">
+          <div className="py-20 text-center text-slate-400 dark:text-slate-500 font-medium text-xs sm:text-sm">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-red-600 border-t-transparent mb-3"></div>
             <p>A carregar notícias...</p>
           </div>
         ) : filteredNews.length === 0 ? (
           /* Estado Vazio */
-          <div className="py-20 text-center bg-white rounded-3xl border border-dashed border-slate-200 p-8">
-            <Newspaper className="mx-auto h-12 w-12 text-slate-300 mb-3" />
-            <h3 className="text-base font-bold text-slate-700">Nenhuma notícia encontrada</h3>
-            <p className="text-xs text-slate-400 mt-1">
+          <div className="py-20 text-center bg-white dark:bg-slate-800/50 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700 p-8 transition-colors">
+            <Newspaper className="mx-auto h-12 w-12 text-slate-300 dark:text-slate-600 mb-3" />
+            <h3 className="text-base font-bold text-slate-700 dark:text-slate-300">Nenhuma notícia encontrada</h3>
+            <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
               {searchTerm ? "Tenta pesquisar por outros termos." : "Não há notícias publicadas no momento."}
             </p>
           </div>
@@ -147,10 +147,10 @@ export default function NoticiasPage() {
             {filteredNews.map((item, index) => (
               <article
                 key={item._id || item.id || index}
-                className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-all duration-200 group"
+                className="bg-white dark:bg-slate-800 rounded-3xl border border-slate-200/80 dark:border-slate-700 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-all duration-200 group"
               >
                 {/* Imagem do Card */}
-                <div className="relative h-48 w-full bg-slate-100 overflow-hidden shrink-0">
+                <div className="relative h-48 w-full bg-slate-100 dark:bg-slate-700 overflow-hidden shrink-0">
                   {item.imageUrl ? (
                     <img
                       src={item.imageUrl}
@@ -158,7 +158,7 @@ export default function NoticiasPage() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                   ) : (
-                    <div className="w-full h-full flex items-center justify-center bg-red-50 text-red-400">
+                    <div className="w-full h-full flex items-center justify-center bg-red-50 dark:bg-slate-800/50 text-red-400 dark:text-red-500/50">
                       <Newspaper size={40} />
                     </div>
                   )}
@@ -168,7 +168,7 @@ export default function NoticiasPage() {
                 <div className="p-5 flex-1 flex flex-col justify-between">
                   <div>
                     {/* Data / Autor */}
-                    <div className="flex items-center gap-3 text-[11px] text-slate-400 font-medium mb-2">
+                    <div className="flex items-center gap-3 text-[11px] text-slate-400 dark:text-slate-400 font-medium mb-2">
                       {item.createdAt && (
                         <span className="flex items-center gap-1">
                           <Calendar size={12} />
@@ -184,21 +184,21 @@ export default function NoticiasPage() {
                     </div>
 
                     {/* Título */}
-                    <h2 className="text-base font-bold text-slate-900 group-hover:text-red-600 transition-colors line-clamp-2 mb-2">
+                    <h2 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors line-clamp-6 mb-2">
                       {item.title}
                     </h2>
 
                     {/* Resumo */}
-                    <p className="text-xs text-slate-600 line-clamp-3 leading-relaxed">
+                    <p className="text-xs text-slate-600 dark:text-slate-300 line-clamp-3 leading-relaxed">
                       {item.content}
                     </p>
                   </div>
 
                   {/* Botão Ler Notícia Completa */}
-                  <div className="pt-4 mt-4 border-t border-slate-100">
+                  <div className="pt-4 mt-4 border-t border-slate-100 dark:border-slate-700">
                     <button
                       onClick={() => setSelectedNews(item)}
-                      className="w-full py-2.5 px-4 bg-slate-50 hover:bg-red-600 text-slate-700 hover:text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-slate-200/80 hover:border-red-600"
+                      className="w-full py-2.5 px-4 bg-slate-50 dark:bg-slate-700/50 hover:bg-red-600 dark:hover:bg-red-600 text-slate-700 dark:text-slate-200 hover:text-white dark:hover:text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer border border-slate-200/80 dark:border-slate-600 hover:border-red-600 dark:hover:border-red-600"
                     >
                       <span>Ler notícia completa</span>
                       <ChevronRight size={14} />
@@ -213,11 +213,11 @@ export default function NoticiasPage() {
 
       {/* ================= MODAL DE LEITURA DA NOTÍCIA ================= */}
       {selectedNews && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-slate-900/80 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-800 w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
             
             {/* Cabeçalho do Modal (Fixo) */}
-            <div className="bg-slate-900 text-white p-6 flex justify-between items-start gap-4 shrink-0">
+            <div className="bg-slate-900 dark:bg-slate-950 text-white p-6 flex justify-between items-start gap-4 shrink-0">
               <div>
                 <span className="inline-block px-2.5 py-1 bg-red-600 text-white text-[10px] font-bold rounded-lg uppercase tracking-wider mb-2">
                   Notícia JIMUE
@@ -250,7 +250,7 @@ export default function NoticiasPage() {
             <div className="overflow-y-auto flex-1">
               {/* Imagem em destaque */}
               {selectedNews.imageUrl && (
-                <div className="w-full h-64 bg-slate-100 overflow-hidden">
+                <div className="w-full h-64 bg-slate-100 dark:bg-slate-900 overflow-hidden">
                   <img
                     src={selectedNews.imageUrl}
                     alt={selectedNews.title}
@@ -261,17 +261,17 @@ export default function NoticiasPage() {
 
               {/* Corpo do Texto */}
               <div className="p-6">
-                <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">
+                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
                   {selectedNews.content}
                 </p>
               </div>
             </div>
 
             {/* Rodapé do Modal (Fixo) */}
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end shrink-0">
+            <div className="p-4 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-700 flex justify-end shrink-0 transition-colors">
               <button
                 onClick={() => setSelectedNews(null)}
-                className="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl transition-all cursor-pointer"
+                className="px-5 py-2.5 bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-all cursor-pointer"
               >
                 Fechar
               </button>
@@ -281,7 +281,7 @@ export default function NoticiasPage() {
       )}
 
       {/* Rodapé Simples */}
-      <footer className="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-400 mt-auto">
+      <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-6 text-center text-xs text-slate-400 dark:text-slate-500 mt-auto transition-colors duration-300">
         &copy; {new Date().getFullYear()} Juventude da Igreja Metodista Unida de Emanuel (JIMUE). Todos os direitos reservados.
       </footer>
     </div>

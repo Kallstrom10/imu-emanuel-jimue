@@ -17,6 +17,7 @@ interface PdfViewerProps {
 export function PdfViewer({ url }: PdfViewerProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const renderTaskRef = useRef<any>(null); // Referência para cancelar tarefas antigas de renderização
 
   const [pdfDoc, setPdfDoc] = useState<any>(null);
   const [pageNum, setPageNum] = useState(1);
@@ -66,9 +67,14 @@ export function PdfViewer({ url }: PdfViewerProps) {
     };
   }, [url]);
 
-  // Função para renderizar a página ajustada ao container
+  // Função para renderizar a página em ALTA NITIDEZ (HiDPI / HD)
   const renderPage = useCallback(() => {
     if (!pdfDoc || !canvasRef.current || !containerRef.current) return;
+
+    // Cancela qualquer renderização em andamento para evitar conflitos/flicker
+    if (renderTaskRef.current) {
+      renderTaskRef.current.cancel();
+    }
 
     pdfDoc.getPage(pageNum).then((page: any) => {
       const canvas = canvasRef.current!;
@@ -84,22 +90,44 @@ export function PdfViewer({ url }: PdfViewerProps) {
       const containerWidth = Math.max(container.clientWidth - padding, 200);
       const containerHeight = Math.max(container.clientHeight - padding, 200);
 
-      // Calcula a escala para encaixar TANTO em largura como em altura
+      // Calcula a escala base para encaixar na tela
       const widthScale = containerWidth / unscaledViewport.width;
       const heightScale = containerHeight / unscaledViewport.height;
 
-      // Escolhe o menor fator para garantir que o PDF nunca seja cortado
       const baseScale = Math.min(widthScale, heightScale);
       const finalScale = baseScale * zoomScale;
 
       const viewport = page.getViewport({ scale: finalScale });
 
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
+      // Fator de escala de nitidez: Usa a densidade do ecrã ou no mínimo 2.0 para HD
+      const pixelRatio = window.devicePixelRatio || 1;
+      const outputScale = Math.max(pixelRatio, 2);
 
-      page.render({
+      // Resolução real da matriz de píxeis (Alta resolução)
+      canvas.width = Math.floor(viewport.width * outputScale);
+      canvas.height = Math.floor(viewport.height * outputScale);
+
+      // Dimensão visual no ecrã (Tamanho CSS normal)
+      canvas.style.width = `${Math.floor(viewport.width)}px`;
+      canvas.style.height = `${Math.floor(viewport.height)}px`;
+
+      // Aplica a matriz de transformação para reescalar o desenho para a nova resolução HD
+      const transform = [outputScale, 0, 0, outputScale, 0, 0];
+
+      const renderContext = {
         canvasContext: context,
         viewport: viewport,
+        transform: transform,
+      };
+
+      const renderTask = page.render(renderContext);
+      renderTaskRef.current = renderTask;
+
+      renderTask.promise.catch((err: any) => {
+        // Ignora erro se a renderização for cancelada intencionalmente pelo utilizador
+        if (err.name !== "RenderingCancelledException") {
+          console.error("Erro na renderização da página:", err);
+        }
       });
     });
   }, [pdfDoc, pageNum, zoomScale]);
@@ -109,7 +137,7 @@ export function PdfViewer({ url }: PdfViewerProps) {
     renderPage();
   }, [renderPage]);
 
-  // Recalcular dimensão ao redimensionar a janela do navegador
+  // Recalcular dimensão ao redimensionar a janela
   useEffect(() => {
     const handleResize = () => {
       renderPage();
@@ -145,7 +173,7 @@ export function PdfViewer({ url }: PdfViewerProps) {
       >
         <canvas
           ref={canvasRef}
-          className="rounded-xl shadow-2xl my-auto max-w-none"
+          className="rounded-xl shadow-2xl my-auto max-w-none transition-transform duration-75"
         />
       </div>
 

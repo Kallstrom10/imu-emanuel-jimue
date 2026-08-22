@@ -4,11 +4,13 @@ import { Model } from 'mongoose';
 import { Member, MemberDocument } from './schemas/member.schema';
 import { CreateMemberDto } from './dto/create-member.dto';
 import * as bcrypt from 'bcrypt';
+import { NotificationsService } from '../notifications/notifications.service';
 
 @Injectable()
 export class MembersService {
   constructor(
     @InjectModel(Member.name) private memberModel: Model<MemberDocument>,
+    private notificationsService: NotificationsService,
   ) {}
 
   async register(createMemberDto: CreateMemberDto): Promise<any> {
@@ -35,6 +37,13 @@ export class MembersService {
 
     // 4. Salvar na base de dados
     const savedMember = await newMember.save();
+
+    // Notificar criação de novo membro
+    await this.notificationsService.create({
+      title: 'Novo Membro Registado',
+      message: `O jovem ${savedMember.firstName} ${savedMember.lastName} acabou de se registar no sistema.`,
+      type: 'NEW_USER',
+    });
 
     // 5. Retornar os dados (sem a senha por motivos de segurança)
     const result = savedMember.toObject();
@@ -88,5 +97,35 @@ export class MembersService {
       throw new NotFoundException(`Membro com ID ${id} não encontrado para eliminar`);
     }
     return membroEliminado;
+  }
+
+  // =======================================================
+  // NOVOS MÉTODOS PARA AS TAREFAS AUTOMÁTICAS (CRON)
+  // =======================================================
+
+  // Procura membros que fazem aniversário no dia de hoje
+  async findAniversariantesDoDia(): Promise<MemberDocument[]> {
+    const today = new Date();
+    const day = today.getDate();
+    const month = today.getMonth() + 1;
+
+    return this.memberModel.find({
+      $expr: {
+        $and: [
+          { $eq: [{ $dayOfMonth: '$birthDate' }, day] }, // Nota: altera 'birthDate' se no teu Schema for outro nome (ex: dataNascimento)
+          { $eq: [{ $month: '$birthDate' }, month] },
+        ],
+      },
+    }).exec();
+  }
+
+  // Conta os membros registados nos últimos 7 dias
+  async countMembrosRegistadosNaUltimaSemana(): Promise<number> {
+    const seteDiasAtras = new Date();
+    seteDiasAtras.setDate(seteDiasAtras.getDate() - 7);
+
+    return this.memberModel.countDocuments({
+      createdAt: { $gte: seteDiasAtras },
+    }).exec();
   }
 }

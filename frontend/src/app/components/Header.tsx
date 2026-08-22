@@ -6,6 +6,8 @@ import Link from "next/link";
 import { Menu, X, LogOut, BookOpen } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
+import { useTheme } from "../context/ThemeContext";
+import { Moon, Sun } from "lucide-react";
 
 export default function Header() {
   const pathname = usePathname();
@@ -23,6 +25,9 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+
+  // MUDANÇA NOS TEMAS: CLARO / ESCURO
+  const { theme, toggleTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -203,10 +208,10 @@ export default function Header() {
                     <img
                       src={userAvatar}
                       alt={displayName}
-                      className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-md group-hover:scale-105 transition-transform"
+                      className="w-10 h-10 rounded-full object-cover border-2 border-white dark:border-slate-800 shadow-md group-hover:scale-105 transition-transform"
                     />
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-white text-red-600 font-black text-lg flex items-center justify-center border-2 border-white shadow-md group-hover:scale-105 transition-transform">
+                    <div className="w-10 h-10 rounded-full bg-white dark:bg-slate-800 text-red-600 dark:text-red-500 font-black text-lg flex items-center justify-center border-2 border-white dark:border-slate-800 shadow-md group-hover:scale-105 transition-transform">
                       {firstLetter}
                     </div>
                   )}
@@ -214,12 +219,12 @@ export default function Header() {
 
                 {/* DROPDOWN DO PERFIL */}
                 {isUserDropdownOpen && (
-                  <div className="absolute right-0 mt-3 w-56 bg-white rounded-2xl shadow-xl border border-slate-100 py-3 px-2 z-50 animate-in fade-in zoom-in-95 duration-150">
-                    <div className="px-3 py-2 border-b border-slate-100 mb-1">
-                      <p className="text-xs font-bold text-slate-800 truncate">
+                  <div className="absolute right-0 mt-3 w-56 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-800 py-3 px-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                    <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 mb-1">
+                      <p className="text-xs font-bold text-slate-800 dark:text-white truncate">
                         {displayName}
                       </p>
-                      <p className="text-[10px] text-slate-500 font-medium capitalize truncate">
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium capitalize truncate">
                         {displayRole}
                       </p>
                     </div>
@@ -229,19 +234,38 @@ export default function Header() {
                       <Link
                         href="/admin"
                         onClick={() => setIsUserDropdownOpen(false)}
-                        className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 rounded-xl transition-colors mb-1"
+                        className="flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 rounded-xl transition-colors mb-1"
                       >
                         Painel Admin
                       </Link>
                     )}
 
+                    {/* BOTÃO DE TEMA (SOL / LUA) */}
+                    <button
+                      onClick={toggleTheme}
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800/80 rounded-xl transition-colors mb-1 cursor-pointer"
+                    >
+                      {theme === "dark" ? (
+                        <>
+                          <Sun size={14} className="text-amber-400" />
+                          <span>Modo Claro</span>
+                        </>
+                      ) : (
+                        <>
+                          <Moon size={14} className="text-slate-600" />
+                          <span>Modo Escuro</span>
+                        </>
+                      )}
+                    </button>
+
+                    {/* SAIR / LOGOUT */}
                     <button
                       onClick={() => {
                         logout();
                         setIsUserDropdownOpen(false);
                         router.push("/login");
                       }}
-                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
+                      className="w-full flex items-center gap-2 px-3 py-2 text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-xl transition-colors cursor-pointer"
                     >
                       <LogOut size={14} />
                       Terminar Sessão
@@ -341,6 +365,27 @@ export default function Header() {
               Contactos
             </Link>
           </nav>
+          <button
+            onClick={toggleTheme}
+            className="w-full flex items-center justify-between px-4 py-3 text-sm font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 rounded-2xl transition-colors cursor-pointer my-6"
+          >
+            <span className="flex items-center gap-2">
+              {theme === "dark" ? (
+                <>
+                  <Sun size={18} className="text-amber-400" />
+                  <span>Modo Claro</span>
+                </>
+              ) : (
+                <>
+                  <Moon size={18} className="text-slate-600" />
+                  <span>Modo Escuro</span>
+                </>
+              )}
+            </span>
+            <span className="text-xs text-slate-400 uppercase font-bold">
+              {theme === "dark" ? "Ativo" : "Desativado"}
+            </span>
+          </button>
         </div>
 
         <div className="pt-6 border-t border-white/20 text-xs text-white/80 text-center font-medium">

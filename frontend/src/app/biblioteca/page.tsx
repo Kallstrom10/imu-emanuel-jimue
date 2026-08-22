@@ -124,24 +124,24 @@ export default function BibliotecaPage() {
   };
 
   // Carregar as avaliações prévias do utilizador logado
-useEffect(() => {
-  async function fetchUserRatings() {
-    const userId = user?.id || user?._id;
-    if (!userId) return;
+  useEffect(() => {
+    async function fetchUserRatings() {
+      const userId = user?.id || user?._id;
+      if (!userId) return;
 
-    try {
-      const res = await fetch(`${API_URL}/books/user-ratings/${userId}`);
-      if (res.ok) {
-        const data = await res.json();
-        setUserRatings(data); // Preenche o estado com as notas já gravadas no DB
+      try {
+        const res = await fetch(`${API_URL}/books/user-ratings/${userId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setUserRatings(data); // Preenche o estado com as notas já gravadas no DB
+        }
+      } catch (error) {
+        console.error("Erro ao carregar avaliações do utilizador:", error);
       }
-    } catch (error) {
-      console.error("Erro ao carregar avaliações do utilizador:", error);
     }
-  }
 
-  fetchUserRatings();
-}, [user, API_URL]);
+    fetchUserRatings();
+  }, [user, API_URL]);
 
   // 3. Filtragem de livros pelo título
   const filteredBooks = books.filter((book) =>
@@ -151,25 +151,25 @@ useEffect(() => {
   // Enquanto valida a autenticação, exibe um ecrã de carregamento
   if (isAuthLoading) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen w-full flex items-center justify-center bg-slate-50 dark:bg-slate-950 transition-colors">
         <Loader2 className="w-10 h-10 animate-spin text-red-600" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#F0F4F8] text-slate-800 font-sans pb-12 relative">
+    <div className="min-h-screen bg-[#F0F4F8] dark:bg-slate-950 text-slate-800 dark:text-slate-100 font-sans pb-12 relative transition-colors duration-200">
       {/* MODAL DE ACESSO RESTRITO */}
       {showAccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl border border-slate-100 transform transition-all">
-            <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 dark:bg-slate-950/80 backdrop-blur-md p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl border border-slate-100 dark:border-slate-800 transform transition-all">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-950/40 text-red-600 dark:text-red-400 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <ShieldAlert size={36} />
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
               Acesso Restrito
             </h3>
-            <p className="text-sm text-slate-500 mb-6 leading-relaxed">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
               Precisa de iniciar sessão para aceder à biblioteca digital.
             </p>
             <button
@@ -231,15 +231,15 @@ useEffect(() => {
       )}
 
       {/* ================= CABEÇALHO / NAVBAR ================= */}
-      <header className="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+      <header className="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-40 shadow-sm transition-colors">
         <div className="container mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
           
           {/* Canto Esquerdo: Voltar para o Site */}
           <Link
             href="/"
-            className="flex items-center gap-2 text-slate-600 hover:text-red-600 text-xs sm:text-sm font-bold transition-colors group"
+            className="flex items-center gap-2 text-slate-600 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400 text-xs sm:text-sm font-bold transition-colors group"
           >
-            <div className="p-2 rounded-xl bg-slate-100 group-hover:bg-red-50 text-slate-600 group-hover:text-red-600 transition-colors">
+            <div className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 group-hover:bg-red-50 dark:group-hover:bg-red-950/30 text-slate-600 dark:text-slate-300 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
               <ArrowLeft size={18} />
             </div>
             <span>Voltar para o site</span>
@@ -247,18 +247,18 @@ useEffect(() => {
 
           {/* Canto Direito: Barra de Pesquisa */}
           <div className="relative w-full sm:w-80">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
             <input
               type="text"
               placeholder="Pesquisar por título..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500 transition-all text-slate-800 placeholder-slate-400"
+              className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500 transition-all text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500"
             />
             {searchTerm && (
               <button
                 onClick={() => setSearchTerm("")}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 cursor-pointer"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
               >
                 <X size={14} />
               </button>
@@ -271,26 +271,26 @@ useEffect(() => {
       {/* ================= CONTEÚDO PRINCIPAL ================= */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
             Biblioteca Digital
           </h1>
-          <p className="text-slate-500 text-sm mt-1">
+          <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
             Explore, avalie e leia o acervo de livros em PDF da JIMUE.
           </p>
         </div>
 
         {/* ECRÃ DE CARREGAMENTO */}
         {isLoading ? (
-          <div className="h-64 w-full flex flex-col items-center justify-center gap-3 text-slate-500">
+          <div className="h-64 w-full flex flex-col items-center justify-center gap-3 text-slate-500 dark:text-slate-400">
             <Loader2 size={36} className="animate-spin text-red-600" />
             <p className="text-sm font-medium">A carregar livros da biblioteca...</p>
           </div>
         ) : filteredBooks.length === 0 ? (
           /* NENHUM LIVRO ENCONTRADO */
-          <div className="bg-white rounded-3xl p-12 text-center border border-slate-200/60 max-w-md mx-auto">
-            <BookOpen size={48} className="mx-auto text-slate-300 mb-3" />
-            <h3 className="text-lg font-bold text-slate-800">Nenhum livro encontrado</h3>
-            <p className="text-sm text-slate-500 mt-1">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-200/60 dark:border-slate-800 max-w-md mx-auto">
+            <BookOpen size={48} className="mx-auto text-slate-300 dark:text-slate-600 mb-3" />
+            <h3 className="text-lg font-bold text-slate-800 dark:text-white">Nenhum livro encontrado</h3>
+            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
               Não foram encontrados livros correspondentes à sua pesquisa.
             </p>
           </div>
@@ -305,10 +305,10 @@ useEffect(() => {
               return (
                 <div
                   key={bookKey}
-                  className="bg-white rounded-3xl border border-slate-200/60 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-all duration-200"
+                  className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/60 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col hover:shadow-md transition-all duration-200"
                 >
                   {/* Capa do Livro */}
-                  <div className="h-48 bg-slate-100 relative flex items-center justify-center overflow-hidden border-b border-slate-100">
+                  <div className="h-48 bg-slate-100 dark:bg-slate-800 relative flex items-center justify-center overflow-hidden border-b border-slate-100 dark:border-slate-800">
                     {book.coverUrl ? (
                       <img
                         src={book.coverUrl}
@@ -316,8 +316,8 @@ useEffect(() => {
                         className="w-full h-full object-cover"
                       />
                     ) : (
-                      <div className="flex flex-col items-center text-slate-400 gap-2 p-4 text-center">
-                        <FileText size={40} className="text-slate-300" />
+                      <div className="flex flex-col items-center text-slate-400 dark:text-slate-500 gap-2 p-4 text-center">
+                        <FileText size={40} className="text-slate-300 dark:text-slate-600" />
                         <span className="text-xs font-medium">Sem imagem de capa</span>
                       </div>
                     )}
@@ -326,7 +326,7 @@ useEffect(() => {
                   {/* Conteúdo do Card */}
                   <div className="p-5 flex-1 flex flex-col justify-between">
                     <div>
-                      <h3 className="font-bold text-slate-900 line-clamp-2 text-base">
+                      <h3 className="font-bold text-slate-900 dark:text-white line-clamp-6 text-base">
                         {book.title}
                       </h3>
                     </div>
@@ -335,7 +335,7 @@ useEffect(() => {
                       {/* Avaliação em Estrelas (1 a 5) */}
                       <div>
                         <div className="flex items-center justify-between mb-1">
-                          <span className="text-[11px] font-semibold text-slate-400 block">
+                          <span className="text-[11px] font-semibold text-slate-400 dark:text-slate-400 block">
                             Sua Avaliação
                           </span>
                           {book.rating !== undefined && book.rating > 0 && (
@@ -368,7 +368,7 @@ useEffect(() => {
                                 className={
                                   star <= activeRating
                                     ? "fill-amber-400 text-amber-400"
-                                    : "text-slate-300 fill-slate-100"
+                                    : "text-slate-300 dark:text-slate-700 fill-slate-100 dark:fill-slate-800"
                                 }
                               />
                             </button>

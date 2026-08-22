@@ -136,27 +136,27 @@ export default function Cadastro() {
   // Enquanto valida a autenticação, evita renderizar o formulário
   if (isAuthLoading) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen w-full flex items-center justify-center bg-slate-50 dark:bg-slate-900 transition-colors">
         <Loader2 className="w-10 h-10 animate-spin text-red-600" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen w-full flex bg-white relative">
+    <div className="min-h-screen w-full flex bg-white dark:bg-slate-900 relative transition-colors duration-300">
       <Toaster />
 
       {/* MODAL DE ACESSO NEGADO */}
       {showAccessModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl border border-slate-100 transform transition-all">
-            <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 dark:bg-slate-950/80 backdrop-blur-md p-4 animate-in fade-in duration-200">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl border border-slate-100 dark:border-slate-700 transform transition-all">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-colors">
               <ShieldAlert size={36} />
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2 transition-colors">
               Acesso Negado
             </h3>
-            <p className="text-sm text-slate-500 mb-6 leading-relaxed">
+            <p className="text-sm text-slate-500 dark:text-slate-300 mb-6 leading-relaxed transition-colors">
               Não tem permissão para aceder a esta página. Apenas o
               administrador pode registar novos membros.
             </p>
@@ -209,12 +209,12 @@ export default function Cadastro() {
       </div>
 
       {/* LADO DIREITO - Formulário */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 bg-slate-50 relative">
-        <div className="w-full max-w-md p-8 sm:p-10 bg-white/60 backdrop-blur-2xl border border-gray-400/80 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] rounded-[2.5rem]">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Criar conta</h2>
-          <p className="text-gray-500 mb-8">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 sm:p-12 bg-slate-50 dark:bg-slate-900 relative transition-colors duration-300">
+        <div className="w-full max-w-md p-8 sm:p-10 bg-white/60 dark:bg-slate-800/80 backdrop-blur-2xl border border-gray-400/80 dark:border-slate-600 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.05)] rounded-[2.5rem] transition-colors">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 transition-colors">Criar conta</h2>
+          <p className="text-gray-500 dark:text-slate-400 mb-8 transition-colors">
             Adicione um novo{" "}
-            <span className="text-red-500 hover:text-red-600 font-semibold">
+            <span className="text-red-500 hover:text-red-600 font-semibold transition-colors">
               JOVEM
             </span>
           </p>
@@ -224,7 +224,7 @@ export default function Cadastro() {
             <div className="grid grid-cols-2 gap-4">
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+                  <User className="h-5 w-5 text-gray-400 dark:text-slate-500" />
                 </div>
                 <input
                   type="text"
@@ -233,7 +233,7 @@ export default function Cadastro() {
                   onChange={handleChange}
                   required
                   placeholder="Nome"
-                  className="w-full pl-10 pr-4 py-4 bg-white/60 border border-gray-200/80 rounded-2xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-gray-800 placeholder-gray-400 shadow-sm"
+                  className="w-full pl-10 pr-4 py-4 bg-white/60 dark:bg-slate-900/50 border border-gray-200/80 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-gray-800 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 shadow-sm"
                 />
               </div>
               <div className="relative">
@@ -244,7 +244,7 @@ export default function Cadastro() {
                   onChange={handleChange}
                   required
                   placeholder="Sobrenome"
-                  className="w-full pl-10 pr-4 py-4 bg-white/60 border border-gray-200/80 rounded-2xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-gray-800 placeholder-gray-400 shadow-sm"
+                  className="w-full pl-10 pr-4 py-4 bg-white/60 dark:bg-slate-900/50 border border-gray-200/80 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-gray-800 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 shadow-sm"
                 />
               </div>
             </div>
@@ -252,7 +252,7 @@ export default function Cadastro() {
             {/* Email (Opcional) */}
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="h-5 w-5 text-gray-400" />
+                <Mail className="h-5 w-5 text-gray-400 dark:text-slate-500" />
               </div>
               <input
                 type="email"
@@ -260,16 +260,16 @@ export default function Cadastro() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Email (Opcional)"
-                className="w-full pl-10 pr-4 py-4 bg-white/60 border border-gray-200/80 rounded-2xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-gray-800 placeholder-gray-400 shadow-sm"
+                className="w-full pl-10 pr-4 py-4 bg-white/60 dark:bg-slate-900/50 border border-gray-200/80 dark:border-slate-700 rounded-2xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-gray-800 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 shadow-sm"
               />
             </div>
 
             {/* Telefone (+244) */}
             <div className="relative flex">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Phone className="h-5 w-5 text-gray-400" />
+                <Phone className="h-5 w-5 text-gray-400 dark:text-slate-500" />
               </div>
-              <span className="flex items-center pl-10 pr-2 py-4 bg-white/60 border border-gray-200/80 border-r-0 rounded-l-2xl text-gray-600 font-medium select-none shadow-sm">
+              <span className="flex items-center pl-10 pr-2 py-4 bg-white/60 dark:bg-slate-900/50 border border-gray-200/80 dark:border-slate-700 border-r-0 rounded-l-2xl text-gray-600 dark:text-slate-400 font-medium select-none shadow-sm transition-colors">
                 +244
               </span>
               <input
@@ -279,14 +279,14 @@ export default function Cadastro() {
                 onChange={handleChange}
                 required
                 placeholder="900 000 000"
-                className="w-full px-4 py-4 bg-white/60 border border-gray-200/80 rounded-r-2xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-gray-800 placeholder-gray-400 shadow-sm"
+                className="w-full px-4 py-4 bg-white/60 dark:bg-slate-900/50 border border-gray-200/80 dark:border-slate-700 rounded-r-2xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-gray-800 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500 shadow-sm"
               />
             </div>
 
             {/* Palavra-passe */}
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Lock className="h-5 w-5 text-gray-400" />
+                <Lock className="h-5 w-5 text-gray-400 dark:text-slate-500" />
               </div>
               <input
                 type={showPassword ? "text" : "password"}
@@ -295,12 +295,12 @@ export default function Cadastro() {
                 onChange={handleChange}
                 required
                 placeholder="Palavra-passe"
-                className="w-full pl-10 pr-10 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-gray-800"
+                className="w-full pl-10 pr-10 py-3 bg-gray-50 dark:bg-slate-900/50 border border-gray-200 dark:border-slate-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all text-gray-800 dark:text-slate-200 placeholder-gray-400 dark:placeholder-slate-500"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 dark:text-slate-500 hover:text-gray-600 dark:hover:text-slate-300 transition-colors"
               >
                 {showPassword ? (
                   <EyeOff className="h-5 w-5" />

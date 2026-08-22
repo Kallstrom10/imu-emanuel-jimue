@@ -222,15 +222,17 @@ export default function LivrosTab() {
               className={`${
                 star <= Math.round(rating)
                   ? "text-red-500 fill-red-500"
-                  : "text-slate-200 fill-slate-100"
+                  : "text-slate-200 fill-slate-100 dark:text-slate-700 dark:fill-slate-800"
               }`}
             />
           ))}
         </div>
 
         {/* Média Numérica e Contagem de Avaliações */}
-        <div className="flex items-center gap-1.5 text-xs text-slate-500 font-medium">
-          <span className="font-bold text-slate-800">{formattedRating}</span>
+        <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 font-medium">
+          <span className="font-bold text-slate-800 dark:text-slate-200">
+            {formattedRating}
+          </span>
           <span>•</span>
           <span>
             {totalRatings}{" "}
@@ -316,20 +318,28 @@ export default function LivrosTab() {
       {/* TOPO: Pesquisa e Botão Adicionar */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div className="relative w-full sm:w-96">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-          <input
-            type="text"
-            placeholder="Pesquisar livro pelo título..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-3 bg-white border border-slate-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500 transition-all text-slate-800 shadow-sm"
-          />
-        </div>
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500" />
+            <input
+              type="text"
+              placeholder="Pesquisar livro pelo título..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-red-500 transition-all text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 shadow-sm"
+            />
+            {searchTerm && (
+              <button
+                onClick={() => setSearchTerm("")}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 cursor-pointer transition-colors"
+              >
+                <X size={14} />
+              </button>
+            )}
+          </div>
 
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-          <div className="w-full sm:w-auto px-5 py-3 bg-white border border-slate-200 rounded-2xl text-sm font-medium text-slate-700 shadow-sm flex items-center justify-center gap-2 select-none">
+          <div className="w-full sm:w-auto px-5 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm font-medium text-slate-700 dark:text-slate-300 shadow-sm flex items-center justify-center gap-2 select-none">
             <span>Total de livros:</span>
-            <span className="bg-red-50 text-red-600 px-2.5 py-0.5 rounded-full text-xs font-extrabold border border-red-100">
+            <span className="bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 px-2.5 py-0.5 rounded-full text-xs font-extrabold border border-red-100 dark:border-red-900/50">
               {books.length}
             </span>
           </div>
@@ -345,7 +355,7 @@ export default function LivrosTab() {
 
       {/* Carregamento */}
       {isLoading && (
-        <div className="flex justify-center items-center py-20 text-slate-400 gap-3">
+        <div className="flex justify-center items-center py-20 text-slate-400 dark:text-slate-500 gap-3">
           <Loader2 className="animate-spin text-red-600" size={28} />
           <span>A carregar acervo de livros...</span>
         </div>
@@ -357,10 +367,10 @@ export default function LivrosTab() {
           {filteredBooks.map((book) => (
             <div
               key={book._id}
-              className="bg-white p-5 rounded-3xl border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group"
+              className="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col group"
             >
               {/* Capa do Livro */}
-              <div className="relative w-full aspect-[3/4] mb-4 overflow-hidden rounded-2xl bg-slate-100">
+              <div className="relative w-full aspect-[3/4] mb-4 overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-800">
                 <img
                   src={book.coverUrl || "https://placehold.co/400x600?text=Sem+Capa"}
                   alt={`Capa do livro ${book.title}`}
@@ -370,7 +380,7 @@ export default function LivrosTab() {
 
               {/* Título, Média e Total de Avaliações */}
               <div className="flex-1 flex flex-col items-center text-center">
-                <h3 className="font-bold text-slate-800 text-base line-clamp-2 leading-tight">
+                <h3 className="font-bold text-slate-800 dark:text-slate-100 text-base line-clamp-6 leading-tight">
                   {book.title}
                 </h3>
                 <RenderStars
@@ -380,11 +390,11 @@ export default function LivrosTab() {
               </div>
 
               {/* Botões de Ação */}
-              <div className="grid grid-cols-3 gap-2 mt-auto pt-4 border-t border-slate-100">
+              <div className="grid grid-cols-3 gap-2 mt-auto pt-4 border-t border-slate-100 dark:border-slate-800">
                 <button
                   onClick={() => setReadingBook(book)}
                   title="Ler Livro (PDF)"
-                  className="flex items-center justify-center py-2.5 cursor-pointer rounded-xl bg-slate-50 text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+                  className="flex items-center justify-center py-2.5 cursor-pointer rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                 >
                   <Eye size={18} />
                 </button>
@@ -392,7 +402,7 @@ export default function LivrosTab() {
                 <button
                   onClick={() => openEditModal(book)}
                   title="Editar Livro"
-                  className="flex items-center justify-center py-2.5 cursor-pointer rounded-xl bg-slate-50 text-slate-600 hover:bg-blue-50 hover:text-blue-600 transition-colors"
+                  className="flex items-center justify-center py-2.5 cursor-pointer rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-blue-50 dark:hover:bg-blue-950/40 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                 >
                   <Edit2 size={18} />
                 </button>
@@ -400,7 +410,7 @@ export default function LivrosTab() {
                 <button
                   onClick={() => setDeletingBook(book)}
                   title="Eliminar Livro"
-                  className="flex items-center justify-center py-2.5 cursor-pointer rounded-xl bg-slate-50 text-slate-600 hover:bg-red-50 hover:text-red-600 transition-colors"
+                  className="flex items-center justify-center py-2.5 cursor-pointer rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 dark:hover:text-red-400 transition-colors"
                 >
                   <Trash2 size={18} />
                 </button>
@@ -411,16 +421,20 @@ export default function LivrosTab() {
       )}
 
       {!isLoading && filteredBooks.length === 0 && (
-        <div className="text-center py-20 text-slate-500 bg-white rounded-3xl border border-slate-100 border-dashed">
-          Nenhum livro encontrado.
+        <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-200/60 dark:border-slate-800 max-w-md mx-auto">
+          <BookOpen size={48} className="mx-auto text-slate-300 dark:text-slate-600 mb-3" />
+          <h3 className="text-lg font-bold text-slate-800 dark:text-white">Nenhum livro encontrado</h3>
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+            Não foram encontrados livros correspondentes à sua pesquisa.
+          </p>
         </div>
       )}
 
       {/* MODAL ADICIONAR / EDITAR LIVRO */}
       {(isAddModalOpen || editingBook) && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-slate-100 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="bg-slate-900 text-white p-6 flex justify-between items-center">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="bg-slate-900 dark:bg-slate-950 text-white p-6 flex justify-between items-center border-b dark:border-slate-800">
               <h3 className="text-lg font-bold">
                 {editingBook ? "Editar Livro" : "Adicionar Novo Livro"}
               </h3>
@@ -435,11 +449,11 @@ export default function LivrosTab() {
             <form onSubmit={handleSaveBook}>
               <div className="p-6 space-y-5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     Capa do Livro {editingBook && "(Deixe vazio para manter a atual)"}
                   </label>
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 shrink-0 overflow-hidden">
+                    <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 shrink-0 overflow-hidden">
                       {coverFile ? (
                         <img
                           src={URL.createObjectURL(coverFile)}
@@ -454,30 +468,30 @@ export default function LivrosTab() {
                       type="file"
                       accept="image/*"
                       onChange={(e) => setCoverFile(e.target.files?.[0] || null)}
-                      className="block w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 file:cursor-pointer transition-all"
+                      className="block w-full text-xs text-slate-500 dark:text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 dark:file:bg-slate-800 file:text-slate-700 dark:file:text-slate-300 hover:file:bg-slate-200 dark:hover:file:bg-slate-700 file:cursor-pointer transition-all"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     Ficheiro PDF {editingBook && "(Deixe vazio para manter o atual)"}
                   </label>
                   <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 shrink-0">
+                    <div className="w-14 h-14 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 dark:text-slate-500 shrink-0">
                       <FileText size={24} />
                     </div>
                     <input
                       type="file"
                       accept=".pdf"
                       onChange={(e) => setPdfFile(e.target.files?.[0] || null)}
-                      className="block w-full text-xs text-slate-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-700 hover:file:bg-slate-200 file:cursor-pointer transition-all"
+                      className="block w-full text-xs text-slate-500 dark:text-slate-400 file:mr-4 file:py-2.5 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 dark:file:bg-slate-800 file:text-slate-700 dark:file:text-slate-300 hover:file:bg-slate-200 dark:hover:file:bg-slate-700 file:cursor-pointer transition-all"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1.5">
+                  <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">
                     Título do Livro *
                   </label>
                   <input
@@ -486,16 +500,16 @@ export default function LivrosTab() {
                     placeholder="Ex: A Arte da Guerra"
                     value={titleInput}
                     onChange={(e) => setTitleInput(e.target.value)}
-                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500 transition-all text-slate-800"
+                    className="w-full px-4 py-3 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500 transition-all text-slate-800 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                   />
                 </div>
               </div>
 
-              <div className="p-4 border-t border-slate-100 bg-slate-50 flex justify-end gap-3">
+              <div className="p-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={closeModal}
-                  className="px-5 py-3 rounded-xl cursor-pointer bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 font-bold text-xs transition-all"
+                  className="px-5 py-3 rounded-xl cursor-pointer bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition-all"
                 >
                   Cancelar
                 </button>
@@ -515,17 +529,17 @@ export default function LivrosTab() {
 
       {/* MODAL DE CONFIRMAÇÃO DE ELIMINAÇÃO */}
       {deletingBook && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-sm rounded-3xl shadow-2xl border border-slate-100 p-6 text-center animate-in fade-in zoom-in-95 duration-200">
-            <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mx-auto mb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-slate-950/80 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-sm rounded-3xl shadow-2xl border border-slate-100 dark:border-slate-800 p-6 text-center animate-in fade-in zoom-in-95 duration-200">
+            <div className="w-12 h-12 rounded-2xl bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 flex items-center justify-center mx-auto mb-4">
               <AlertTriangle size={24} />
             </div>
-            <h3 className="text-base font-bold text-slate-800 mb-2">
+            <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 mb-2">
               Eliminar Livro
             </h3>
-            <p className="text-xs text-slate-500 mb-6">
+            <p className="text-xs text-slate-500 dark:text-slate-400 mb-6">
               Tens a certeza que desejas eliminar{" "}
-              <span className="font-bold text-slate-700">
+              <span className="font-bold text-slate-700 dark:text-slate-200">
                 "{deletingBook.title}"
               </span>
               ? Esta ação não pode ser desfeita.
@@ -534,7 +548,7 @@ export default function LivrosTab() {
               <button
                 type="button"
                 onClick={() => setDeletingBook(null)}
-                className="w-full py-3 rounded-xl cursor-pointer bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs transition-all"
+                className="w-full py-3 rounded-xl cursor-pointer bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition-all"
               >
                 Cancelar
               </button>

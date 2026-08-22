@@ -166,9 +166,9 @@ export default function RecuperarSenhaPage() {
       )}
 
       {/* CONTEÚDO DA PÁGINA */}
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-2xl overflow-hidden border border-slate-100 animate-in fade-in duration-300">
+      <div className="w-full max-w-md bg-slate-900 rounded-3xl shadow-2xl overflow-hidden border border-slate-700 animate-in fade-in duration-300">
         {/* TOPO DA PÁGINA */}
-        <div className="bg-slate-900 p-6 text-white relative">
+        <div className="bg-slate-950 p-6 text-white relative">
           <button
             onClick={() => router.back()}
             className="mb-4 inline-flex items-center gap-2 text-xs text-slate-400 hover:text-white transition-colors cursor-pointer"
@@ -180,7 +180,7 @@ export default function RecuperarSenhaPage() {
             <div className="p-3 bg-red-600/20 text-red-500 rounded-2xl">
               <KeyRound size={24} />
             </div>
-            <div>
+            <div className="bg-slate-950">
               <h1 className="text-lg font-bold">Recuperar Palavra-passe</h1>
               <p className="text-xs text-slate-400">
                 Painel de Gestão do Administrador
@@ -203,7 +203,7 @@ export default function RecuperarSenhaPage() {
                 placeholder="Ex: 923456789"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
+                className="w-full pl-10 pr-4 py-3 bg-slate-900 border border-slate-600 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
               />
             </div>
           </div>
@@ -220,7 +220,7 @@ export default function RecuperarSenhaPage() {
                 placeholder="Mínimo 6 caracteres"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-800 focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
+                className="w-full pl-10 pr-4 py-3 bg-slate-900 border border-slate-600 rounded-xl text-xs text-white focus:outline-none focus:ring-2 focus:ring-red-500 transition-all"
               />
               <button
                 type="button"

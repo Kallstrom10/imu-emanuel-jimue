@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useTheme } from "../context/ThemeContext";
 import {
   Home,
   Users,
@@ -11,8 +12,8 @@ import {
   ChevronRight,
   Globe,
   LogOut,
-  Bell,
   Moon,
+  Sun,
   User,
   Newspaper,
   Award,
@@ -26,6 +27,7 @@ import MembrosTab, { Membro } from "@/app/components/admin/MembrosTab";
 import LivrosTab from "@/app/components/admin/LivrosTab";
 import NoticiasTab from "@/app/components/admin/NoticiasTab";
 import { useAuth } from "@/app/context/AuthContext";
+import NotificationBell from "../components/admin/Notifications";
 
 // Interface para a tipagem dos dados do Dashboard
 interface DashboardData {
@@ -58,6 +60,9 @@ export default function AdminDashboard() {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState("inicio");
   const [showAccessModal, setShowAccessModal] = useState(false);
+
+  // MUDANÇA NOS TEMAS: CLARO / ESCURO
+  const { theme, toggleTheme } = useTheme();
 
   // Estados para dados do backend e carregamento
   const [stats, setStats] = useState<DashboardData | null>(null);
@@ -144,7 +149,7 @@ export default function AdminDashboard() {
   // Enquanto valida a autenticação, exibe um ecrã de carregamento
   if (isAuthLoading) {
     return (
-      <div className="min-h-screen w-full flex items-center justify-center bg-slate-50">
+      <div className="min-h-screen w-full flex items-center justify-center bg-slate-50 dark:bg-slate-900 transition-colors">
         <Loader2 className="w-10 h-10 animate-spin text-red-600" />
       </div>
     );
@@ -166,26 +171,26 @@ export default function AdminDashboard() {
 
   // Trata objeto de utilizador simples ou aninhado
   const currentUser = user?.user || user;
-  const userInitial = currentUser?.firstName?.[0] || currentUser?.firstname?.[0] || "A";
-  const userPhoto = currentUser?.avatarUrl || currentUser?.avatar || currentUser?.foto || currentUser?.photo;
-  const userFname = currentUser?.firstName || currentUser?.firstname || "";
-  const userLname = currentUser?.lastName || currentUser?.lastname || "";
+  const userInitial = currentUser?.firstName?.[0] || "A";
+  const userPhoto = currentUser?.avatarUrl;
+  const userFname = currentUser?.firstName || "";
+  const userLname = currentUser?.lastName || "";
   const userFirstName = userFname ? userFname.split(" ")[0] : "Admin";
   const userRole = "Administrador";
 
   return (
-    <div className="h-screen w-full flex bg-[#F0F4F8] font-sans text-gray-800 overflow-hidden relative">
+    <div className={`h-screen w-full flex bg-[#F0F4F8] dark:bg-slate-950 font-sans text-gray-800 dark:text-slate-200 overflow-hidden relative transition-colors duration-300 ${theme}`}>
       {/* MODAL DE ACESSO NEGADO */}
       {showAccessModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl border border-slate-100 transform transition-all">
-            <div className="w-16 h-16 bg-red-100 text-red-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <div className="bg-white dark:bg-slate-800 rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl border border-slate-100 dark:border-slate-700 transform transition-all">
+            <div className="w-16 h-16 bg-red-100 dark:bg-red-500/20 text-red-600 dark:text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <ShieldAlert size={36} />
             </div>
-            <h3 className="text-xl font-bold text-slate-900 mb-2">
+            <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">
               Acesso Negado
             </h3>
-            <p className="text-sm text-slate-500 mb-6 leading-relaxed">
+            <p className="text-sm text-slate-500 dark:text-slate-400 mb-6 leading-relaxed">
               Não tem permissão para aceder ao painel de administração. Apenas utilizadores autorizados têm acesso.
             </p>
             <button
@@ -333,13 +338,13 @@ export default function AdminDashboard() {
       <main className="flex-1 h-full overflow-y-auto p-8">
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-slate-900">
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-white transition-colors">
               {activeTab === "inicio" && `Olá, ${userFirstName}`}
               {activeTab === "membros" && "Gestão de Membros"}
               {activeTab === "livros" && "Biblioteca & Livros"}
               {activeTab === "noticias" && "Notícias da JIMUE"}
             </h1>
-            <p className="text-slate-500 text-sm">
+            <p className="text-slate-500 dark:text-slate-400 text-sm transition-colors">
               {activeTab === "inicio" && "Visão geral da Juventude"}
               {activeTab === "membros" && "Consulte, edite e gira os membros da juventude"}
               {activeTab === "livros" && "Gestão do acervo de livros da juventude"}
@@ -348,18 +353,29 @@ export default function AdminDashboard() {
           </div>
 
           <div className="flex items-center gap-3">
-            <button className="p-2.5 bg-white text-slate-600 rounded-xl hover:bg-slate-100 transition-all shadow-sm border border-slate-200/60">
-              <Moon size={18} />
+            {/* BOTÃO MUDANÇA DE TEMA */}
+            <button
+              onClick={toggleTheme}
+              title={theme === "dark" ? "Mudar para Modo Claro" : "Mudar para Modo Escuro"}
+              className="p-2.5 bg-white cursor-pointer dark:bg-slate-800 text-slate-600 dark:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-all shadow-sm border border-slate-200/60 dark:border-slate-700"
+            >
+              {theme === "dark" ? (
+                <Sun size={18} className="text-amber-400" />
+              ) : (
+                <Moon size={18} />
+              )}
             </button>
-            <div className="relative">
-              <button className="p-2.5 bg-white text-slate-600 rounded-xl hover:bg-slate-100 transition-all shadow-sm border border-slate-200/60">
-                <Bell size={18} />
-              </button>
-              <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                9+
-              </span>
-            </div>
-            <div className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center font-bold text-sm shadow-md overflow-hidden">
+
+            {/* NOTIFICAÇÕES (COMPONENTE DINÂMICO INSERIDO) */}
+            <NotificationBell />
+
+            {/* FOTO / AVATAR */}
+            <button 
+              className="w-10 h-10 bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white rounded-xl flex items-center justify-center font-bold text-sm shadow-md overflow-hidden"
+                onClick={() => {
+                router.push("/recuperar-senha");
+            }}
+            >
               {userPhoto ? (
                 <img
                   src={userPhoto}
@@ -369,7 +385,8 @@ export default function AdminDashboard() {
               ) : (
                 userInitial
               )}
-            </div>
+              
+            </button>
           </div>
         </div>
 
@@ -377,7 +394,7 @@ export default function AdminDashboard() {
         {activeTab === "inicio" && (
           <>
             {isLoading ? (
-              <div className="h-96 w-full flex flex-col items-center justify-center gap-3 text-slate-500">
+              <div className="h-96 w-full flex flex-col items-center justify-center gap-3 text-slate-500 dark:text-slate-400">
                 <Loader2 size={36} className="animate-spin text-red-600" />
                 <p className="text-sm font-medium">A carregar estatísticas do painel...</p>
               </div>
@@ -463,21 +480,21 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* CONTAINER 1: TOTAL DE HOMENS E MULHERES */}
-                <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/60">
-                  <h2 className="text-base font-bold text-slate-800 mb-5">Total de Moços e Moças</h2>
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/60 dark:border-slate-700 transition-colors">
+                  <h2 className="text-base font-bold text-slate-800 dark:text-slate-100 mb-5">Total de Moços e Moças</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* MOÇOS */}
-                    <div className="bg-[#F8FAFC] p-5 rounded-2xl border border-slate-100 flex flex-col justify-between">
-                      <div className="flex items-center gap-2 text-slate-500 text-xs font-medium mb-3">
+                    <div className="bg-[#F8FAFC] dark:bg-slate-700/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-600 flex flex-col justify-between transition-colors">
+                      <div className="flex items-center gap-2 text-slate-500 dark:text-slate-300 text-xs font-medium mb-3">
                         <User size={16} className="text-blue-600" /> Moços
                       </div>
-                      <div className="text-2xl font-bold text-slate-900 mb-1">
+                      <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
                         {stats?.totalHomens ?? 0}
                       </div>
-                      <div className="text-xs text-slate-400 mb-3">
+                      <div className="text-xs text-slate-400 dark:text-slate-400 mb-3">
                         Representa {percentHomens}% do total
                       </div>
-                      <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                      <div className="w-full bg-slate-200 dark:bg-slate-600 h-2 rounded-full overflow-hidden">
                         <div
                           className="bg-blue-600 h-full transition-all duration-500"
                           style={{ width: `${percentHomens}%` }}
@@ -486,17 +503,17 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* MOÇAS */}
-                    <div className="bg-[#F8FAFC] p-5 rounded-2xl border border-slate-100 flex flex-col justify-between">
-                      <div className="flex items-center gap-2 text-slate-500 text-xs font-medium mb-3">
+                    <div className="bg-[#F8FAFC] dark:bg-slate-700/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-600 flex flex-col justify-between transition-colors">
+                      <div className="flex items-center gap-2 text-slate-500 dark:text-slate-300 text-xs font-medium mb-3">
                         <User size={16} className="text-red-500" /> Moças
                       </div>
-                      <div className="text-2xl font-bold text-slate-900 mb-1">
+                      <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
                         {stats?.totalMulheres ?? 0}
                       </div>
-                      <div className="text-xs text-slate-400 mb-3">
+                      <div className="text-xs text-slate-400 dark:text-slate-400 mb-3">
                         Representa {percentMulheres}% do total
                       </div>
-                      <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
+                      <div className="w-full bg-slate-200 dark:bg-slate-600 h-2 rounded-full overflow-hidden">
                         <div
                           className="bg-red-500 h-full transition-all duration-500"
                           style={{ width: `${percentMulheres}%` }}
@@ -507,26 +524,26 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* CONTAINER 2: BATIZADOS */}
-                <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/60">
-                  <h2 className="text-base font-bold text-slate-800 mb-5">Batizados</h2>
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/60 dark:border-slate-700 transition-colors">
+                  <h2 className="text-base font-bold text-slate-800 dark:text-slate-100 mb-5">Batizados</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                     {/* BATIZADOS */}
-                    <div className="bg-[#F8FAFC] p-5 rounded-2xl border border-slate-100 flex flex-col justify-between">
-                      <div className="flex items-center gap-2 text-slate-500 text-xs font-medium mb-2">
+                    <div className="bg-[#F8FAFC] dark:bg-slate-700/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-600 flex flex-col justify-between transition-colors">
+                      <div className="flex items-center gap-2 text-slate-500 dark:text-slate-300 text-xs font-medium mb-2">
                         <CheckCircle2 size={16} className="text-emerald-500" /> Batizados
                       </div>
-                      <div className="text-2xl font-bold text-slate-900 mb-1">
+                      <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
                         {stats?.batismo.batizados.total ?? 0}
                       </div>
-                      <div className="text-xs text-slate-500 mb-3 flex items-center gap-3">
-                        <span className="text-blue-600 font-medium">
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-3">
+                        <span className="text-blue-600 dark:text-blue-400 font-medium">
                           ♂ {stats?.batismo.batizados.m ?? 0}
                         </span>
-                        <span className="text-red-500 font-medium">
+                        <span className="text-red-500 dark:text-red-400 font-medium">
                           ♀ {stats?.batismo.batizados.f ?? 0}
                         </span>
                       </div>
-                      <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden flex">
+                      <div className="w-full bg-slate-200 dark:bg-slate-600 h-2 rounded-full overflow-hidden flex">
                         <div
                           className="bg-blue-600 h-full transition-all duration-500"
                           style={{ width: `${batizadosMalePct}%` }}
@@ -539,22 +556,22 @@ export default function AdminDashboard() {
                     </div>
 
                     {/* NÃO BATIZADOS */}
-                    <div className="bg-[#F8FAFC] p-5 rounded-2xl border border-slate-100 flex flex-col justify-between">
-                      <div className="flex items-center gap-2 text-slate-500 text-xs font-medium mb-2">
+                    <div className="bg-[#F8FAFC] dark:bg-slate-700/50 p-5 rounded-2xl border border-slate-100 dark:border-slate-600 flex flex-col justify-between transition-colors">
+                      <div className="flex items-center gap-2 text-slate-500 dark:text-slate-300 text-xs font-medium mb-2">
                         <XCircle size={16} className="text-amber-500" /> Não Batizados
                       </div>
-                      <div className="text-2xl font-bold text-slate-900 mb-1">
+                      <div className="text-2xl font-bold text-slate-900 dark:text-white mb-1">
                         {stats?.batismo.naoBatizados.total ?? 0}
                       </div>
-                      <div className="text-xs text-slate-500 mb-3 flex items-center gap-3">
-                        <span className="text-blue-600 font-medium">
+                      <div className="text-xs text-slate-500 dark:text-slate-400 mb-3 flex items-center gap-3">
+                        <span className="text-blue-600 dark:text-blue-400 font-medium">
                           ♂ {stats?.batismo.naoBatizados.m ?? 0}
                         </span>
-                        <span className="text-red-500 font-medium">
+                        <span className="text-red-500 dark:text-red-400 font-medium">
                           ♀ {stats?.batismo.naoBatizados.f ?? 0}
                         </span>
                       </div>
-                      <div className="w-full bg-slate-200 h-2 rounded-full overflow-hidden flex">
+                      <div className="w-full bg-slate-200 dark:bg-slate-600 h-2 rounded-full overflow-hidden flex">
                         <div
                           className="bg-blue-600 h-full transition-all duration-500"
                           style={{ width: `${naoBatizadosMalePct}%` }}
@@ -569,18 +586,18 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* CONTAINER 3: DISTRIBUIÇÃO POR CLASSE */}
-                <div className="bg-white p-6 rounded-3xl shadow-sm border border-slate-200/60">
+                <div className="bg-white dark:bg-slate-800 p-6 rounded-3xl shadow-sm border border-slate-200/60 dark:border-slate-700 transition-colors">
                   <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-base font-bold text-slate-800">Distribuição por Classe</h2>
+                    <h2 className="text-base font-bold text-slate-800 dark:text-slate-100">Distribuição por Classe</h2>
                     <div className="flex items-center gap-4 text-xs font-medium">
-                      <span className="flex items-center gap-1.5 text-blue-600">
-                        <span className="w-2.5 h-2.5 rounded-full bg-blue-600 inline-block"></span>{" "}
+                      {/* <span className="flex items-center gap-1.5 text-blue-600 dark:text-blue-400">
+                        <span className="w-2.5 h-2.5 rounded-full bg-blue-600 dark:bg-blue-400 inline-block"></span>{" "}
                         Masculino
                       </span>
-                      <span className="flex items-center gap-1.5 text-red-500">
-                        <span className="w-2.5 h-2.5 rounded-full bg-red-500 inline-block"></span>{" "}
+                      <span className="flex items-center gap-1.5 text-red-500 dark:text-red-400">
+                        <span className="w-2.5 h-2.5 rounded-full bg-red-500 dark:bg-red-400 inline-block"></span>{" "}
                         Feminino
-                      </span>
+                      </span> */}
                     </div>
                   </div>
 
@@ -593,23 +610,23 @@ export default function AdminDashboard() {
                       return (
                         <div
                           key={idx}
-                          className="bg-[#F8FAFC] p-4 rounded-2xl border border-slate-100 flex flex-col justify-between hover:border-slate-200 transition-all"
+                          className="bg-[#F8FAFC] dark:bg-slate-700/50 p-4 rounded-2xl border border-slate-100 dark:border-slate-600 flex flex-col justify-between hover:border-slate-200 dark:hover:border-slate-500 transition-all"
                         >
                           <div>
-                            <div className="text-2xl font-bold text-slate-900">{cls.total}</div>
-                            <div className="text-xs font-medium text-slate-500 mb-2">
+                            <div className="text-2xl font-bold text-slate-900 dark:text-white">{cls.total}</div>
+                            <div className="text-xs font-medium text-slate-500 dark:text-slate-300 mb-2">
                               {cls.name}
                             </div>
                           </div>
 
                           <div>
-                            <div className="text-[11px] text-slate-400 mb-2 flex items-center gap-3">
+                            <div className="text-[11px] text-slate-400 dark:text-slate-400 mb-2 flex items-center gap-3">
                               <span>♂ {cls.m}</span>
                               <span>♀ {cls.f}</span>
                             </div>
 
                             {/* BARRA / SLIDER ÚNICO DINÂMICO */}
-                            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden flex">
+                            <div className="w-full bg-slate-200 dark:bg-slate-600 h-1.5 rounded-full overflow-hidden flex">
                               {cls.total > 0 ? (
                                 <>
                                   <div
@@ -622,7 +639,7 @@ export default function AdminDashboard() {
                                   ></div>
                                 </>
                               ) : (
-                                <div className="bg-slate-300 h-full w-full"></div>
+                                <div className="bg-slate-300 dark:bg-slate-500 h-full w-full"></div>
                               )}
                             </div>
                           </div>

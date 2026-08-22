@@ -189,24 +189,24 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800 scroll-smooth pt-20">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-white scroll-smooth pt-20 transition-colors duration-300">
       {/* SEÇÃO HERO */}
       <section id="inicio" className="container mx-auto px-6 py-16 text-center">
         <div className="max-w-3xl mx-auto space-y-4">
-          <span className="inline-block px-4 py-1.5 bg-red-100 text-red-600 rounded-full text-xs font-bold uppercase tracking-wider">
+          <span className="inline-block px-4 py-1.5 bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-400 rounded-full text-xs font-bold uppercase tracking-wider">
             Plataforma Oficial
           </span>
-          <h1 className="text-4xl sm:text-6xl font-black text-slate-900 tracking-tight">
+          <h1 className="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white tracking-tight">
             Bem-vindo à <span className="text-red-600">JIMUE</span>
           </h1>
-          <p className="text-slate-600 text-base sm:text-lg leading-relaxed">
+          <p className="text-slate-600 dark:text-slate-300 text-base sm:text-lg leading-relaxed">
             Juventude da Igreja Metodista Unida de Emanuel. Unindo corações, fortalecendo a fé e edificando líderes para o futuro.
           </p>
         </div>
       </section>
 
       {/* SEÇÃO 1: JIMUE */}
-      <section id="jimue" className="py-20 bg-white border-y border-slate-100 scroll-mt-17">
+      <section id="jimue" className="py-20 bg-white dark:bg-slate-950 border-y border-slate-100 dark:border-neutral-800 scroll-mt-17 transition-colors">
         <div className="container mx-auto px-6">
           <div className="flex items-center gap-3 mb-12">
             <Users className="text-red-600" size={28} />
@@ -216,17 +216,17 @@ export default function Home() {
           </div>
 
           {/* CORPO EXECUTIVO */}
-          <div className="bg-slate-50 p-8 sm:p-12 rounded-3xl border border-slate-100 shadow-sm mb-16">
-            <h3 className="text-xl font-black text-center text-slate-800 uppercase tracking-wider mb-8 pb-3 border-b border-slate-200">
+          <div className="bg-slate-50 dark:bg-slate-900/60 p-8 sm:p-12 rounded-3xl border border-slate-100 dark:border-neutral-800 shadow-sm mb-16">
+            <h3 className="text-xl font-black text-center text-slate-800 dark:text-white uppercase tracking-wider mb-8 pb-3 border-b border-slate-200 dark:border-neutral-800">
               Corpo Executivo
             </h3>
 
             {isLoadingMembers ? (
-              <div className="text-center py-8 text-slate-400 text-sm">
+              <div className="text-center py-8 text-slate-400 dark:text-slate-500 text-sm">
                 A carregar membros do Corpo Executivo...
               </div>
             ) : corpoExecutivo.length === 0 ? (
-              <div className="text-center py-8 text-slate-400 text-sm">
+              <div className="text-center py-8 text-slate-400 dark:text-slate-500 text-sm">
                 Nenhum membro registrado no Corpo Executivo.
               </div>
             ) : (
@@ -236,9 +236,9 @@ export default function Home() {
                   return (
                     <div
                       key={membro._id}
-                      className="bg-white p-5 rounded-2xl border border-slate-100 text-center flex flex-col items-center hover:shadow-md transition-all"
+                      className="bg-white dark:bg-slate-950 p-5 rounded-2xl border border-slate-100 dark:border-neutral-800 text-center flex flex-col items-center hover:shadow-md transition-all"
                     >
-                      <div className="w-24 h-24 rounded-full bg-slate-100 border-2 border-red-500 mb-4 overflow-hidden flex items-center justify-center text-slate-400">
+                      <div className="w-24 h-24 rounded-full bg-slate-100 dark:bg-neutral-800 border-2 border-red-500 mb-4 overflow-hidden flex items-center justify-center text-slate-400 dark:text-slate-500">
                         {foto ? (
                           <img
                             src={foto}
@@ -252,7 +252,7 @@ export default function Home() {
                       <h4 className="font-extrabold text-red-600 text-base">
                         {membro.firstName} {membro.lastName}
                       </h4>
-                      <p className="text-xs text-slate-500 font-medium mt-1">
+                      <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1">
                         {membro.role}
                       </p>
                     </div>
@@ -263,13 +263,13 @@ export default function Home() {
           </div>
 
           {/* CORPO DIRETIVO */}
-          <div className="bg-slate-50 p-8 sm:p-12 rounded-3xl border border-slate-100 shadow-sm">
-            <h3 className="text-xl font-black text-center text-slate-800 uppercase tracking-wider mb-12 pb-3 border-b border-slate-200">
+          <div className="bg-slate-50 dark:bg-slate-900/60 p-8 sm:p-12 rounded-3xl border border-slate-100 dark:border-neutral-800 shadow-sm">
+            <h3 className="text-xl font-black text-center text-slate-800 dark:text-white uppercase tracking-wider mb-12 pb-3 border-b border-slate-200 dark:border-neutral-800">
               Corpo Diretivo
             </h3>
 
             {isLoadingMembers ? (
-              <div className="text-center py-8 text-slate-400 text-sm">
+              <div className="text-center py-8 text-slate-400 dark:text-slate-500 text-sm">
                 A carregar comissões do Corpo Diretivo...
               </div>
             ) : (
@@ -284,7 +284,7 @@ export default function Home() {
                       </h4>
 
                       {membrosComissao.length === 0 ? (
-                        <p className="text-xs text-slate-400 italic pl-4">
+                        <p className="text-xs text-slate-400 dark:text-slate-500 italic pl-4">
                           Sem membros registrados nesta comissão.
                         </p>
                       ) : (
@@ -294,9 +294,9 @@ export default function Home() {
                             return (
                               <div
                                 key={membro._id}
-                                className="bg-white p-4 rounded-2xl border border-slate-100 flex items-center gap-4 hover:border-red-200 transition-all"
+                                className="bg-white dark:bg-slate-950 p-4 rounded-2xl border border-slate-100 dark:border-neutral-800 flex items-center gap-4 hover:border-red-200 dark:hover:border-red-900/50 transition-all"
                               >
-                                <div className="w-12 h-12 rounded-full bg-slate-100 text-slate-400 shrink-0 overflow-hidden flex items-center justify-center border border-red-100">
+                                <div className="w-12 h-12 rounded-full bg-slate-100 dark:bg-neutral-800 text-slate-400 dark:text-slate-500 shrink-0 overflow-hidden flex items-center justify-center border border-red-100 dark:border-red-900/30">
                                   {foto ? (
                                     <img
                                       src={foto}
@@ -311,7 +311,7 @@ export default function Home() {
                                   <h5 className="font-bold text-red-600 text-xs truncate">
                                     {membro.firstName} {membro.lastName}
                                   </h5>
-                                  <p className="text-[11px] text-slate-500 truncate">
+                                  <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
                                     {membro.role}
                                   </p>
                                 </div>
@@ -340,7 +340,7 @@ export default function Home() {
           </div>
           <Link
             href="/noticias"
-            className="flex items-center gap-2 text-sm font-bold text-red-600 hover:text-red-700 transition-colors bg-white hover:bg-red-50 px-5 py-2.5 rounded-2xl border border-slate-200 shadow-sm"
+            className="flex items-center gap-2 text-sm font-bold text-red-600 hover:text-red-700 transition-colors bg-white dark:bg-neutral-900 hover:bg-red-50 dark:hover:bg-neutral-800 px-5 py-2.5 rounded-2xl border border-slate-200 dark:border-neutral-800 shadow-sm"
           >
             <span>Ver todas as notícias</span>
             <ArrowRight size={16} />
@@ -349,9 +349,9 @@ export default function Home() {
 
         {/* Carrossel de Notícias */}
         {isLoadingNews ? (
-          <div className="py-20 text-center text-slate-400">A carregar notícias...</div>
+          <div className="py-20 text-center text-slate-400 dark:text-slate-500">A carregar notícias...</div>
         ) : news.length === 0 ? (
-          <div className="py-20 text-center text-slate-400 bg-white rounded-3xl border border-dashed border-slate-200">
+          <div className="py-20 text-center text-slate-400 dark:text-slate-500 bg-white dark:bg-neutral-900 rounded-3xl border border-dashed border-slate-200 dark:border-neutral-800">
             Nenhuma notícia publicada de momento.
           </div>
         ) : (
@@ -362,7 +362,7 @@ export default function Home() {
           >
             <button
               onClick={handlePrevNews}
-              className="absolute left-0 z-30 p-3 bg-white/90 shadow-xl border border-slate-200 text-red-600 rounded-full hover:bg-red-600 hover:text-white transition-all cursor-pointer"
+              className="absolute left-0 z-30 p-3 bg-white/90 dark:bg-neutral-900/90 shadow-xl border border-slate-200 dark:border-neutral-800 text-red-600 rounded-full hover:bg-red-600 hover:text-white transition-all cursor-pointer"
             >
               <ChevronLeft size={24} />
             </button>
@@ -373,13 +373,13 @@ export default function Home() {
                 return (
                   <div
                     key={item._id}
-                    className={`transition-all duration-700 ease-in-out flex flex-col bg-white rounded-3xl border shadow-md overflow-hidden ${
+                    className={`transition-all duration-700 ease-in-out flex flex-col bg-white dark:bg-slate-950 rounded-3xl border shadow-md overflow-hidden ${
                       isCenter
                         ? "w-full max-w-sm sm:max-w-md scale-105 z-20 border-red-500 shadow-red-500/10 shadow-2xl"
-                        : "hidden md:flex w-full max-w-xs scale-90 opacity-60 z-10 border-slate-200 blur-[0.5px]"
+                        : "hidden md:flex w-full max-w-xs scale-90 opacity-60 z-10 border-slate-200 dark:border-neutral-800 blur-[0.5px]"
                     }`}
                   >
-                    <div className="relative w-full aspect-video bg-slate-100 flex items-center justify-center overflow-hidden">
+                    <div className="relative w-full aspect-video bg-slate-100 dark:bg-neutral-800 flex items-center justify-center overflow-hidden">
                       {item.imageUrl ? (
                         <img
                           src={item.imageUrl}
@@ -387,15 +387,15 @@ export default function Home() {
                           className="w-full h-full object-cover"
                         />
                       ) : (
-                        <Newspaper size={40} className="text-slate-300" />
+                        <Newspaper size={40} className="text-slate-300 dark:text-neutral-700" />
                       )}
                     </div>
 
                     <div className="p-5 flex flex-col flex-1">
-                      <h3 className="font-bold text-slate-800 text-base line-clamp-2 mb-2">
+                      <h3 className="font-bold text-slate-800 dark:text-white text-base line-clamp-2 mb-2">
                         {item.title}
                       </h3>
-                      <p className="text-slate-500 text-xs line-clamp-3 mb-4 leading-relaxed">
+                      <p className="text-slate-500 dark:text-slate-400 text-xs line-clamp-3 mb-4 leading-relaxed">
                         {item.content}
                       </p>
 
@@ -415,7 +415,7 @@ export default function Home() {
 
             <button
               onClick={handleNextNews}
-              className="absolute right-0 z-30 p-3 bg-white/90 shadow-xl border border-slate-200 text-red-600 rounded-full hover:bg-red-600 hover:text-white transition-all cursor-pointer"
+              className="absolute right-0 z-30 p-3 bg-white/90 dark:bg-neutral-900/90 shadow-xl border border-slate-200 dark:border-neutral-800 text-red-600 rounded-full hover:bg-red-600 hover:text-white transition-all cursor-pointer"
             >
               <ChevronRight size={24} />
             </button>
@@ -424,7 +424,7 @@ export default function Home() {
       </section>
 
       {/* SEÇÃO 3: SOBRE NÓS */}
-      <section id="sobre" className="py-20 bg-white border-y scroll-mt-17 border-slate-100">
+      <section id="sobre" className="py-20 bg-white dark:bg-slate-950 border-y scroll-mt-17 border-slate-100 dark:border-neutral-800 transition-colors">
         <div className="container mx-auto px-6">
           <div className="flex items-center gap-3 mb-12">
             <Info className="text-red-600" size={28} />
@@ -434,7 +434,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="w-full aspect-video sm:aspect-square max-h-[400px] rounded-3xl overflow-hidden bg-slate-100 border border-slate-200 shadow-md">
+            <div className="w-full aspect-video sm:aspect-square max-h-[400px] rounded-3xl overflow-hidden bg-slate-100 dark:bg-neutral-800 border border-slate-200 dark:border-neutral-800 shadow-md">
               <img
                 src="/foto-jimue.jpg"
                 alt="Sobre a JIMUE"
@@ -445,8 +445,8 @@ export default function Home() {
               />
             </div>
 
-            <div className="space-y-5 text-slate-600 text-sm sm:text-base leading-relaxed">
-              <h3 className="text-2xl font-bold text-slate-900">
+            <div className="space-y-5 text-slate-600 dark:text-slate-300 text-sm sm:text-base leading-relaxed">
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white">
                 Unindo Jovens, Transformando Vidas.
               </h3>
               <p>
@@ -470,40 +470,40 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center text-center hover:border-red-200 transition-all">
-            <div className="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-6">
+          <div className="bg-white dark:bg-slate-950 p-8 rounded-3xl border border-slate-100 dark:border-neutral-800 shadow-sm flex flex-col items-center text-center hover:border-red-200 dark:hover:border-red-900/50 transition-all">
+            <div className="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 flex items-center justify-center mb-6">
               <Phone size={28} />
             </div>
-            <h3 className="font-bold text-slate-800 text-lg mb-2">Telefones</h3>
-            <p className="text-slate-500 text-xs sm:text-sm">+244 934 139 667</p>
-            <p className="text-slate-500 text-xs sm:text-sm">+244 928 246 352</p>
+            <h3 className="font-bold text-slate-800 dark:text-white text-lg mb-2">Telefones</h3>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">+244 934 139 667</p>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">+244 928 246 352</p>
           </div>
 
-          <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center text-center hover:border-red-200 transition-all">
-            <div className="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-6">
+          <div className="bg-white dark:bg-slate-950 p-8 rounded-3xl border border-slate-100 dark:border-neutral-800 shadow-sm flex flex-col items-center text-center hover:border-red-200 dark:hover:border-red-900/50 transition-all">
+            <div className="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 flex items-center justify-center mb-6">
               <MapPin size={28} />
             </div>
-            <h3 className="font-bold text-slate-800 text-lg mb-2">Localização</h3>
-            <p className="text-slate-500 text-xs sm:text-sm">Rangel, Rua do Paraná</p>
-            <p className="text-slate-500 text-xs sm:text-sm">Luanda - Angola</p>
+            <h3 className="font-bold text-slate-800 dark:text-white text-lg mb-2">Localização</h3>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Rangel, Rua do Paraná</p>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">Luanda - Angola</p>
           </div>
 
-          <div className="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm flex flex-col items-center text-center hover:border-red-200 transition-all">
-            <div className="w-14 h-14 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center mb-6">
+          <div className="bg-white dark:bg-slate-950 p-8 rounded-3xl border border-slate-100 dark:border-neutral-800 shadow-sm flex flex-col items-center text-center hover:border-red-200 dark:hover:border-red-900/50 transition-all">
+            <div className="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 flex items-center justify-center mb-6">
               <Mail size={28} />
             </div>
-            <h3 className="font-bold text-slate-800 text-lg mb-2">E-mails</h3>
-            <p className="text-slate-500 text-xs sm:text-sm">alfanioantonio4@gmail.com</p>
-            <p className="text-slate-500 text-xs sm:text-sm">rodsonp521@gmail.com</p>
+            <h3 className="font-bold text-slate-800 dark:text-white text-lg mb-2">E-mails</h3>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">alfanioantonio4@gmail.com</p>
+            <p className="text-slate-500 dark:text-slate-400 text-xs sm:text-sm">rodsonp521@gmail.com</p>
           </div>
         </div>
       </section>
 
       {/* MODAL LER NOTÍCIA COMPLETA */}
       {viewingNews && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl border border-slate-100 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
-            <div className="bg-slate-900 text-white p-6 flex justify-between items-start gap-4 shrink-0">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 dark:bg-black/70 backdrop-blur-sm p-4">
+          <div className="bg-white dark:bg-slate-900 w-full max-w-2xl max-h-[85vh] rounded-3xl shadow-2xl border border-slate-100 dark:border-neutral-800 overflow-hidden flex flex-col animate-in fade-in zoom-in-95 duration-200">
+            <div className="bg-slate-900 dark:bg-slate-950 text-white p-6 flex justify-between items-start gap-4 shrink-0">
               <div>
                 <span className="inline-block px-2.5 py-1 bg-red-600 text-white text-[10px] font-bold rounded-lg uppercase tracking-wider mb-2">
                   Notícia JIMUE
@@ -520,7 +520,7 @@ export default function Home() {
               </div>
               <button
                 onClick={() => setViewingNews(null)}
-                className="p-2 rounded-xl bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white transition-all cursor-pointer shrink-0"
+                className="p-2 rounded-xl bg-slate-800 dark:bg-slate-800 text-slate-300 hover:bg-slate-700 dark:hover:bg-neutral-700 hover:text-white transition-all cursor-pointer shrink-0"
               >
                 <X size={18} />
               </button>
@@ -528,7 +528,7 @@ export default function Home() {
 
             <div className="overflow-y-auto flex-1">
               {viewingNews.imageUrl && (
-                <div className="w-full h-64 bg-slate-100 overflow-hidden">
+                <div className="w-full h-64 bg-slate-100 dark:bg-neutral-800 overflow-hidden">
                   <img
                     src={viewingNews.imageUrl}
                     alt={viewingNews.title}
@@ -538,16 +538,16 @@ export default function Home() {
               )}
 
               <div className="p-6">
-                <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-line">
+                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed whitespace-pre-line">
                   {viewingNews.content}
                 </p>
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-100 flex justify-end shrink-0">
+            <div className="p-4 bg-slate-50 dark:bg-slate-900 border-t border-slate-100 dark:border-neutral-800 flex justify-end shrink-0">
               <button
                 onClick={() => setViewingNews(null)}
-                className="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold rounded-xl transition-all cursor-pointer"
+                className="px-5 py-2.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-neutral-700 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-all cursor-pointer"
               >
                 Fechar
               </button>
@@ -557,9 +557,9 @@ export default function Home() {
       )}
 
       {/* RODAPÉ */}
-      <footer className="bg-black text-white pt-16 pb-8 border-t border-slate-800">
+      <footer className="bg-black dark:bg-neutral-950 text-white pt-16 pb-8 border-t border-slate-800 dark:border-neutral-900">
         <div className="container mx-auto px-6">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-8 pb-12 border-b border-slate-800">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-8 pb-12 border-b border-slate-800 dark:border-neutral-900">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white font-black text-lg">
                 <img
